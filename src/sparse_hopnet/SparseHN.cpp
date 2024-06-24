@@ -1,35 +1,30 @@
 #include "SparseHN.hpp"
 
-SparseHNN::SparseHNN(size_t ctx_len) : _ctx_len(ctx_len)
+SparseHN::SparseHN(size_t ctx_len) : _ctx_len(ctx_len)
 {}
 
-SparseHNN::SparseHNN(std::string const &path) {
+SparseHN::SparseHN(std::string const &path) {
     load(path);
 }
 
-SparseHNN::~SparseHNN(){
+SparseHN::~SparseHN(){
 }
 
-void    SparseHNN::load(std::string const &path)
+void    SparseHN::load(std::string const &path)
 {
     /* TBD */
 }
 
-void    SparseHNN::train(std::vector<t_clamped> clamped_nodes)
+void    SparseHN::train(std::vector<Node &> clamped_nodes)
 {
-    Node *curr      = NULL;
-    Node *target    = NULL;
-
     for (size_t i = 0; i < clamped_nodes.size(); i++)
     {
-        curr = getNode(clamped_nodes[i].item_id);
         for (size_t j = 0; i < clamped_nodes.size(); j++)
-        {
-            target = getNode(clamped_nodes[j].item_id);
-            if (j != i)
-            {
-                
-            }
-        }
+            if (j != i) clamped_nodes[i].interact(&clamped_nodes[j]);
     }
+}
+
+std::vector<std::size_t>    SparseHN::infer(std::vector<Node&> pattern, size_t out_size)
+{
+    /* TBD */
 }

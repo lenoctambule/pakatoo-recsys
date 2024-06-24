@@ -1,16 +1,12 @@
-#include <deque>
+#include <map>
 #include <cstddef>
-
-typedef struct s_neigh
-{
-    Node    *item;
-    double  w;
-} t_neigh;
 
 class   Node
 {
     private :
-        std::deque<t_neigh>  _neigh;
+        std::map<Node *, double>    _neigh;
+        size_t                      _id;
+        double                      _state;
 
     public :
         Node();
@@ -18,6 +14,8 @@ class   Node
         Node(Node const &a);
         Node &operator=(Node const &a);
 
-        void    setNeigh(Node *target, double w);
-        t_neigh getNeigh(size_t id);
+        void    setState(double state);
+        double  getState();
+        void    interact(Node *target);
+        double  E(std::deque<Node *> sample);
 };
