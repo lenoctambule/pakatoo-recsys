@@ -1,4 +1,5 @@
 #include "Node.hpp"
+#include "Matrix.hpp"
 #include <deque>
 #include <vector>
 #include <iostream>
@@ -19,18 +20,17 @@ typedef struct s_sclamped
 class SparseHN
 {
     private :
-        std::map<std::string, Node *>   _db;
-        std::deque<Node>                _nodes;
+        Matrix<Node>                    _nodes;
         size_t                          _ctx_len;
 
         SparseHN(SparseHN const &a);
         SparseHN   &operator=(SparseHN const &a);
-        /* Get or create a node*/
+        /* Get or create a node */
         Node    *get_or_create(size_t id);
         Node    *get_or_create(std::string const &key);
 
     public :
-        SparseHN(size_t ctx_len);
+        SparseHN(size_t ctx_len, size_t n_nodes);
         SparseHN(std::string const &path);
         ~SparseHN();
 
