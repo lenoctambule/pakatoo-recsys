@@ -28,14 +28,14 @@ Where $\mu^x$ is a concrete property associated to element $x$ of a system $S$ a
 
 For instance, each one of a car's parts makes it drive, respond to our controls, be confortable, etc ... When engineering it, we consider its abstract properties first and work out the parts to be put together. When we reason about it, we consider its parts to figure out its abstract properties. However, a car does not self-assemble or self-organizes because we are doing that. What we want is tell our wishes to a machine so it can do the reasoning and the engineering for us.
 
-This gives an interesting problem which is to find a system $S_{\text{meta}}$ whose abstract property is to efficiently be or make any system we ask. Which means that we are essentially creating a system of all systems.
+This gives an interesting problem which is to find a system $S_{\text{meta}}$ whose abstract property is to efficiently be or make any system we ask. Which means that we are essentially creating an adaptive system.
 
 $$
-\bigcup_{x \in S} \mu^x \rightarrow \text{any } \omega
+S_{\text{meta}} : \bigcup_{e \in S} \mu^e \rightarrow \omega(x)
 $$
 
+## Model
 
-## Energy-based Network
 
 
 ## Results
