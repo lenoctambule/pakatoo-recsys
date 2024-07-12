@@ -17,24 +17,34 @@ Hopfield Networks have given insights in engineering systems this way by introdu
 
 However, they are fully connected network thus we can't exactly consider the learning and update rules to be local. 
 
-## Problem formulation : a system of systems
+## Problem formulation : a self-engineered system
 
 First, we formalize a system $S$ as an ensemble of parts that as a whole exhibit abstract properties,
 $$
-S : \bigcup_{x \in S} \mu^x \rightarrow \omega^S
+S : \bigcup_{e \in S} P_e \rightarrow P_A
 $$
 
-Where $\mu^x$ is a concrete property associated to element $x$ of a system $S$ and $\omega^S$ is a abstract property of a system $S$. The goal is to define each $\mu^x$ such that the sum of these properties matches an abitrarily defined $\omega^S$ or define $\omega^S$ such that it is matched by $\sum_{x \in S}\mu^x$.
+Where $\mu^x$ is a concrete property associated to element $x$ of a system $S$ and $\omega^S$ is a abstract property of a system $S$. The goal is to define each $\mu^x$ such that the sum of these properties matches an abitrarily defined $\omega^S$ or define $\omega^S$ such that it is matched by $\bigcup_{e \in S} P_e $.
 
-For instance, each one of a car's parts makes it drive, respond to our controls, be confortable, etc ... When engineering it, we consider its abstract properties first and work out the parts to be put together. When we reason about it, we consider its parts to figure out its abstract properties. However, a car does not self-assemble or self-organizes because we are doing that. What we want is tell our wishes to a machine so it can do the reasoning and the engineering for us.
+When engineering a system, abstract properties are considered first and then the parts are designed and assembled such that it satisfies that abstract property. When we reason about a system, we consider its parts to figure out its abstract properties. However, we want our system to be self-engineered or autonomously analyzed.
 
-This gives an interesting problem which is to find a system $S_{\text{meta}}$ whose abstract property is to efficiently be or make any system we ask. Which means that we are essentially creating an adaptive system.
-
-$$
-S_{\text{meta}} : \bigcup_{e \in S} \mu^e \rightarrow \omega(x)
-$$
+This gives an interesting problem which is to find a system $S_{\text{meta}}$ whose abstract property is to be adaptive. Achieving this would allow to create both systems that are resistant to perturbations but to create systems that improve without any human input.
 
 ## Model
+
+Through Cybernetics and thanks to Ross Ashby insights, we have a theoretical framework for adaptability which can be measured as the ratio between the variety of self-preserving responses of a system and the variety of perturbations of its environment or adversary.
+
+Thus, in order for our system to be adaptable relative to its environment the ratio $r$ of response over perturbation complexity ratio needs to be 
+
+$$ r = {K_S \over K_E} \geq 1 $$
+
+Where $K_S$ is the system's Kolmogorov complexity of response and $K_E$ complexity of perturbations.
+However, in certain games, simple mimicry (eg. Tit for Tat strategy in Rapoport's work) matches performance of any other strategy because mimicry matches any adversary's strategies in complexity of response just not temporally. In other games where temporality is important, mimic strategies will always underperform because no matter how good of a decision you make, it does not matter if it is too late. We, thus, also need to introduce temporal precedence as a constraint which means that $K_S(t) > K_E(t+1)$.
+
+Which formally gives us,
+$$
+\text{S is adaptive : }r(t) = {K_S(t) \over K_E(t+1)} \geq 1
+$$
 
 
 
