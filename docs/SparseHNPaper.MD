@@ -46,7 +46,7 @@ $$
 Q_{S/E}(t) = {K_L(S, t) \over K_L(E, t + \delta t)}\approx 1
 $$
 
-This gives us one fundamental mechanism of our system which is **complexity acclimatation**. This is especially helpful in cases where complexity comes with a cost. 
+This gives us one fundamental mechanism of our system which is **complexity acclimatation** and **JIT complexity**. This is especially helpful in cases where complexity comes with a cost. 
 
 ## II. Model
 
@@ -58,13 +58,19 @@ $$
 S_{meta} : \prod_{e \in S_{m}} P_e \rightarrow  Q_{S_{m}/S_E}(t) \approx 1
 $$
 
-### A. A predictive mirror
+### A. Predictive mirroring
 
-This property implies that we need to engineer a predictive mirror or less formally a "mirror that reflects light before it hits".
+This property implies that we need to engineer a predictive mirror or less formally a "mirror that reflects light before it hits". In order to do this we need to condition our fundamental units to be predictive and in order to do so we only need our system to consistently be able to minimize surprise.
 
-In order to do this we need to condition our fundamental units to be predictive and in order to do so we only need our system to consistently be able to minimize surprise.
+$$
 
-Let $e_{A}$ and $e_{B}$ be two nodes of our system
+S : \prod_{bird \in S} \text{do bird stuff} \rightarrow \text{form crazy flocks that increase overall survivability rates}
+
+$$
+
+A natural system that we can take note off are schools of fishes, flocks of birds or birdoids. They are interesting because their abstract behaviour arises from local and predictive constraint propagation ie. constraint is bsed on how they will be physically constrained based on their predictive model of their surrounding.
+
+
 
 ## Results
 
