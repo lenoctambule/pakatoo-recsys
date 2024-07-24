@@ -70,8 +70,6 @@ $$
 
 A natural system that we can take note off are schools of fishes, flocks of birds or birdoids. They are interesting because their abstract behaviour arises from local and predictive constraint propagation ie. constraint is bsed on how they will be physically constrained based on their predictive model of their surrounding.
 
-
-
 ## Results
 
 
@@ -81,3 +79,4 @@ A natural system that we can take note off are schools of fishes, flocks of bird
 ## Bibliography
 
 - _Neuronal Dynamics, From single neurons to networks and models of cognition_, Wulfram Gerstner, Werner M. Kistler, Richard Naud and Liam Paninski
+- Hopfield network, John J. Hopfield, Scholarpedia
