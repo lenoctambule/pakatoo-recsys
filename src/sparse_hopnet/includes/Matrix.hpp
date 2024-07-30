@@ -4,8 +4,9 @@ template <typename T>
 class Matrix
 {
     private :
-        std::vector<T>                      _items;
-        std::vector<double>                 _adj_matrix;
+        std::vector<T>          _items;
+        std::vector<double>     _adj_matrix;
+        size_t                  _size;
 
     public :
         Matrix();

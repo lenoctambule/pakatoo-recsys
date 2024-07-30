@@ -15,7 +15,7 @@ Local learning rules are both biologically plausible and desirable because of th
 
 Hopfield Networks have given insights in engineering systems this way by introducing a macro-scale energy function or hamiltonian $E$ and at a microscale introducing learning rules that respectively lowers this macro-measurement $E$ for desirable states of the system while ensuring that the update rule make the system converge to a lower-energy state.
 
-However, they are fully connected network thus we can't exactly consider the learning and update rules to be local. 
+However, they are fully connected network thus we can't exactly consider the learning and update rules to be local.
 
 ### A. A self-engineered system
 
@@ -30,7 +30,7 @@ When engineering a system, abstract properties are considered first and then the
 
 This gives an interesting problem which is to find a system $S_{\text{meta}}$ whose abstract property is to be adaptive. Achieving this would allow to create both systems that are resistant to perturbations but to create systems that improve without any human input.
 
-### B. Just-In-Time Response Complexity : No need to be smarter, just smart enough
+### B. Just-In-Time Complexity : No need to be smarter, just smart enough
 
 Through Cybernetics and thanks to Ross Ashby insights, we have a theoretical framework for adaptability which can be measured as the ratio between the variety of self-preserving responses of a system and the variety of perturbations of its environment or adversary.
 
@@ -58,17 +58,9 @@ $$
 S_{meta} : \prod_{e \in S_{m}} P_e \rightarrow  Q_{S_{m}/S_E}(t) \approx 1
 $$
 
-### A. Predictive mirroring
+### A. Guaranteed Liberty Algorithm
 
-This property implies that we need to engineer a predictive mirror or less formally a "mirror that reflects light before it hits". In order to do this we need to condition our fundamental units to be predictive and in order to do so we only need our system to consistently be able to minimize surprise.
-
-$$
-
-S : \prod_{bird \in S} \text{do bird stuff} \rightarrow \text{form crazy flocks that increase overall survivability rates}
-
-$$
-
-A natural system that we can take note off are schools of fishes, flocks of birds or birdoids. They are interesting because their abstract behaviour arises from local and predictive constraint propagation ie. constraint is bsed on how they will be physically constrained based on their predictive model of their surrounding.
+This property implies that we need to engineer a predictive mirror. The fundamental unit of our system can thus be defined as the ability to consistently minimize surprise as in we need to bridge the gap between actual and expected activity.
 
 ## Results
 
@@ -80,3 +72,4 @@ A natural system that we can take note off are schools of fishes, flocks of bird
 
 - _Neuronal Dynamics, From single neurons to networks and models of cognition_, Wulfram Gerstner, Werner M. Kistler, Richard Naud and Liam Paninski
 - Hopfield network, John J. Hopfield, Scholarpedia
+- Luczak, A., McNaughton, B.L. & Kubo, Y. Neurons learn by predicting future activity. Nat Mach Intell 4, 62–72 (2022). https://doi.org/10.1038/s42256-021-00430-y

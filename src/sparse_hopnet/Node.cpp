@@ -25,3 +25,12 @@ void    Node::interact(Node *target)
 {
 }
 
+void    Node::setState(double state)
+{
+    _state = state;
+}
+
+double  Node::getState()
+{
+    return _state;
+}

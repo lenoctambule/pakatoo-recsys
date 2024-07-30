@@ -30,7 +30,7 @@ class SparseHN
         Node    *get_or_create(std::string const &key);
 
     public :
-        SparseHN(size_t ctx_len, size_t n_nodes);
+        SparseHN(size_t ctx_len);
         SparseHN(std::string const &path);
         ~SparseHN();
 
