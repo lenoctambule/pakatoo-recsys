@@ -38,9 +38,9 @@ Thus, in order for our system to be adaptable relative to its environment the ra
 
 $$ Q = {K_L(S) \over K_L(E)} \geq 1 $$
 
-Where $K_L$ is a Kolomogorv complexity for a language $L$ of $S$ a system and $E$ the environement. However, in certain games, simple mimicry (eg. Tit for Tat strategy in Rapoport's work) matches performance of any other strategy because mimicry matches any adversary's strategies in complexity of response just not temporally. In other games where temporality is important, mimic strategies will always underperform because no matter how good of a decision you make, it does not matter if it is too late. We, thus, also need to introduce temporal precedence as a constraint which means that $K_L(S, t) > K_L(E, t+\delta t)$.
+Where $K_L$ is a Kolomogorv complexity for a language $L$ of $S$ a system and $E$ the environement. However, in certain games, simple mimicry (eg. Tit for Tat strategy in Rapoport's work) matches performance of any other strategy because mimicry matches any adversary's strategy in complexity of response just not temporally. In other games where temporality is important, mimic strategies is likely to underperform. We, thus, also need to introduce temporal precedence as a constraint which means that $K_L(S, t) > K_L(E, t+\delta t)$.
 
-However, in order, to ensure that temporality does not hinder performance and to save computation we'll instead state that,
+However, in order, to ensure that the system does not overperform and to save computation we'll instead state that,
 
 $$
 Q_{S/E}(t) = {K_L(S, t) \over K_L(E, t + \delta t)}\approx 1
@@ -58,9 +58,9 @@ $$
 S_{meta} : \prod_{e \in S_{m}} P_e \rightarrow  Q_{S_{m}/S_E}(t) \approx 1
 $$
 
-### A. Guaranteed Liberty Algorithm
+### A. 
 
-This property implies that we need to engineer a predictive mirror. The fundamental unit of our system can thus be defined as the ability to consistently minimize surprise as in we need to bridge the gap between actual and expected activity.
+This property implies that we need to engineer a system that is predictive. The fundamental unit of our system can thus be defined as the ability to consistently minimize surprise as in we need to bridge the gap between real and expected activity.
 
 ## Results
 

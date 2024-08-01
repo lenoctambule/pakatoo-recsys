@@ -1,5 +1,7 @@
 #include <map>
-#include <cstddef>
+# include <cstddef>
+
+# define LR 0.3
 
 class   Node
 {
@@ -17,5 +19,5 @@ class   Node
         void    setState(double state);
         double  getState();
         void    interact(Node *target);
-        double  E(std::deque<Node *> sample);
+        double  E();
 };

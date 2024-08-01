@@ -18,12 +18,23 @@ void    SparseHN::load(std::string const &path)
     /* TBD */
 }
 
-void    SparseHN::train(std::vector<Node &> clamped_nodes)
+void    SparseHN::train(std::vector<t_iclamped> clamped_nodes)
 {
     for (size_t i = 0; i < clamped_nodes.size(); i++)
     {
         for (size_t j = 0; j < clamped_nodes.size(); j++)
-            if (j != i) clamped_nodes[i].interact(&clamped_nodes[j]);
+        {
+            Node &a = _nodes[clamped_nodes[i].id];
+            Node &b = _nodes[clamped_nodes[j].id];
+
+            a.setState(clamped_nodes[i].val);
+            b.setState(clamped_nodes[j].val);
+            if (j != i)
+            {
+                a.interact(&b);
+                b.interact(&a);
+            }
+        }
     }
 }
 

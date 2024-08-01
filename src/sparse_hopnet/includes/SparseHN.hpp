@@ -20,14 +20,13 @@ typedef struct s_sclamped
 class SparseHN
 {
     private :
-        Matrix<Node>                    _nodes;
-        size_t                          _ctx_len;
+        std::deque<Node>               _nodes;
+        size_t                         _ctx_len;
 
         SparseHN(SparseHN const &a);
-        SparseHN   &operator=(SparseHN const &a);
+        SparseHN    &operator=(SparseHN const &a);
         /* Get or create a node */
-        Node    *get_or_create(size_t id);
-        Node    *get_or_create(std::string const &key);
+        Node        *get_or_create(size_t id);
 
     public :
         SparseHN(size_t ctx_len);
@@ -38,8 +37,7 @@ class SparseHN
         void    save(std::string const &path);
         void    load(std::string const &path);
         /* Train using either series of clamped nodes or item-item similarity */
-        void    train(std::vector<Node &> clamped_nodes);
-        void    train(size_t a_1, size_t a_2, double d_w);
+        void    train(std::vector<t_iclamped> clamped_nodes);
         /* Infer next likeliest <out_size> items from a series of user interactions */
         std::vector<std::size_t>    infer(std::vector<Node&> pattern, size_t out_size);
 };

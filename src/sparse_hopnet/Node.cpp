@@ -14,7 +14,7 @@ Node    &Node::operator=(Node const &a)
     _neigh  = a._neigh;
     _id     = a._id;
     _state  = a._state;
-    return *this;
+    return (*this);
 }
 
 Node::~Node()
@@ -23,14 +23,15 @@ Node::~Node()
 
 void    Node::interact(Node *target)
 {
+    auto ite    = _neigh.find(target);
+    double d_w  = LR * this->getState() * target->getState();
+
+    if (ite == _neigh.end())
+        _neigh[target]  = d_w;
+    else
+        ite->second     += d_w;
 }
 
-void    Node::setState(double state)
-{
-    _state = state;
-}
+void    Node::setState(double state) { _state = state; }
 
-double  Node::getState()
-{
-    return _state;
-}
+double  Node::getState() { return _state; }
