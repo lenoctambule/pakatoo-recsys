@@ -11,12 +11,6 @@ typedef struct s_iclamped
     double      val;
 } t_iclamped;
 
-typedef struct s_sclamped
-{
-    std::string token;
-    double      val;
-} t_sclamped;
-
 class SparseHN
 {
     private :

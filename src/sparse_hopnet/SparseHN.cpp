@@ -1,10 +1,11 @@
 #include "SparseHN.hpp"
 
-SparseHN::SparseHN(size_t ctx_len) : _ctx_len(ctx_len)
+SparseHN::SparseHN(size_t ctx_len) : _ctx_len(ctx_len),
+                                    _tensor(2)
 {
 }
 
-SparseHN::SparseHN(std::string const &path)
+SparseHN::SparseHN(std::string const &path) : _tensor(2)
 {
     load(path);
 }
@@ -18,22 +19,22 @@ void    SparseHN::load(std::string const &path)
     /* TBD */
 }
 
-void    SparseHN::train(std::vector<t_iclamped> clamped_nodes)
-{
-    for (size_t i = 0; i < clamped_nodes.size(); i++)
-    {
-        for (size_t j = 0; j < clamped_nodes.size(); j++)
-        {
-            Node &a = _nodes[clamped_nodes[i].id];
-            Node &b = _nodes[clamped_nodes[j].id];
+static double clamp(double n, double max) {
+    return std::min(max, std::max(-max, n));
+}
 
-            a.setState(clamped_nodes[i].val);
-            b.setState(clamped_nodes[j].val);
-            if (j != i)
-            {
-                a.interact(&b);
-                b.interact(&a);
-            }
+void    SparseHN::train(std::vector<t_iclamped> clamped)
+{
+    size_t seq_len = clamped.size();
+
+    for (size_t i = 0; i < seq_len; i++)
+    {
+        for (size_t j = 0; j < seq_len; j++)
+        {
+            std::vector<double> &w = _tensor.get(clamped[i].id, clamped[j].id);
+            double              dx = (i - j) / seq_len;
+            w[0] += 1;
+            w[1] += (1 / dx);
         }
     }
 }
