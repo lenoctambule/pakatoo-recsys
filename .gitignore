@@ -1,1 +1,5 @@
 .vscode
+harry.txt
+obj
+*.o
+*.d

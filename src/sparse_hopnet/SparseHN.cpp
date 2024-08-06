@@ -1,7 +1,7 @@
 #include "SparseHN.hpp"
 
 SparseHN::SparseHN(size_t ctx_len) : _ctx_len(ctx_len),
-                                    _tensor(2)
+                                    _tensor(1)
 {
 }
 
@@ -23,7 +23,7 @@ static double clamp(double n, double max) {
     return std::min(max, std::max(-max, n));
 }
 
-void    SparseHN::train(std::vector<t_iclamped> clamped)
+void    SparseHN::train(std::vector<t_iclamped> &clamped)
 {
     size_t seq_len = clamped.size();
 
@@ -31,15 +31,32 @@ void    SparseHN::train(std::vector<t_iclamped> clamped)
     {
         for (size_t j = 0; j < seq_len; j++)
         {
+            if (i == j)
+                continue ;
+            if (clamped[i].id >= _tensor.size() || clamped[j].id >= _tensor.size())
+                return ;
             std::vector<double> &w = _tensor.get(clamped[i].id, clamped[j].id);
-            double              dx = (i - j) / seq_len;
-            w[0] += 1;
-            w[1] += (1 / dx);
+            double              dx = (i - j) / (double)seq_len;
+            w[0] += (1 / dx);
         }
     }
 }
 
-std::vector<std::size_t>    SparseHN::infer(std::vector<Node&> pattern, size_t out_size)
+double  SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
 {
-    /* TBD */
+    size_t  seq_len = clamped.size();
+    double  energy = 0;
+
+    for (int i = 0; i < seq_len; i++)
+    {
+        for (int j = 0; j < seq_len; j++)
+        {
+            if (i == j)
+                continue;
+            std::vector<double> &w = _tensor.get(clamped[i].id, clamped[j].id);
+            double              dx = (i - j) / (double) seq_len;
+            energy += dx * w[0];
+        }
+    }
+    return energy;
 }

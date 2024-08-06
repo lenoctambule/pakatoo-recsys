@@ -14,7 +14,6 @@ typedef struct s_iclamped
 class SparseHN
 {
     private :
-        std::deque<Node>               _nodes;
         Tensor                         _tensor;
         size_t                         _ctx_len;
 
@@ -32,7 +31,7 @@ class SparseHN
         void    save(std::string const &path);
         void    load(std::string const &path);
         /* Train using either series of clamped nodes or item-item similarity */
-        void    train(std::vector<t_iclamped> clamped_nodes);
+        void    train(std::vector<t_iclamped> &clamped);
         /* Infer next likeliest <out_size> items from a series of user interactions */
-        std::vector<std::size_t>    infer(std::vector<Node&> pattern, size_t out_size);
+        double  seq_energy(std::vector<t_iclamped> &clamped);
 };

@@ -9,7 +9,8 @@ Tensor::Tensor(size_t depth) : _depth(depth),
                                             depth, 0.0
                                         )
                                     )
-                                )
+                                ),
+                                _N(SIZEINC)
 {
 }
 
@@ -34,4 +35,5 @@ void                    Tensor::extend()
 {
     for (auto ite = _tensor.begin(); ite != _tensor.end(); ite++)
         ite->resize(ite->size() + SIZEINC);
+    _N += SIZEINC;
 }
