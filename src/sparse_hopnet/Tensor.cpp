@@ -17,7 +17,10 @@ Tensor::~Tensor()
 {
 }
 
-std::vector<double>    &Tensor::get(size_t x, size_t y)
+size_t                  Tensor::size() { return _N; }
+size_t                  Tensor::getDepth() { return _depth; }
+
+std::vector<double>     &Tensor::get(size_t x, size_t y)
 {
     return (_tensor[y][x]);
 }
@@ -29,5 +32,6 @@ std::vector<double>     &Tensor::operator()(size_t x, size_t y)
 
 void                    Tensor::extend()
 {
-    /* TODO */
+    for (auto ite = _tensor.begin(); ite != _tensor.end(); ite++)
+        ite->resize(ite->size() + SIZEINC);
 }

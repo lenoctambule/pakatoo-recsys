@@ -18,8 +18,10 @@ class Tensor
         Tensor(size_t _depth);
         ~Tensor();
 
+        size_t                  size();
+        size_t                  getDepth();
+
         std::vector<double>     &get(size_t x, size_t y);
         std::vector<double>     &operator()(size_t x, size_t y);
-
         void                    extend();
 };

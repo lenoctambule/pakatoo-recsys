@@ -1,5 +1,5 @@
 #include "Node.hpp"
-#include "Matrix.hpp"
+#include "Tensor.hpp"
 #include <deque>
 #include <vector>
 #include <iostream>
@@ -21,6 +21,7 @@ class SparseHN
 {
     private :
         std::deque<Node>               _nodes;
+        Tensor                         _tensor;
         size_t                         _ctx_len;
 
         SparseHN(SparseHN const &a);
