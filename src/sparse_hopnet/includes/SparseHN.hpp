@@ -6,8 +6,6 @@
 #include <cstddef>
 #include <cmath>
 
-#define LR 6.0
-
 typedef struct s_iclamped
 {
     size_t      id;
@@ -18,13 +16,12 @@ class SparseHN
 {
     private :
         Tensor                         _tensor;
-        size_t                         _ctx_len;
 
         SparseHN(SparseHN const &a);
         SparseHN    &operator=(SparseHN const &a);
 
     public :
-        SparseHN(size_t ctx_len);
+        SparseHN();
         SparseHN(std::string const &path);
         ~SparseHN();
 

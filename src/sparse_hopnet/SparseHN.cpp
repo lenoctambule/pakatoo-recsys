@@ -1,7 +1,6 @@
 #include "SparseHN.hpp"
 
-SparseHN::SparseHN(size_t ctx_len) : _ctx_len(ctx_len),
-                                    _tensor(1)
+SparseHN::SparseHN() : _tensor(1)
 {
 }
 
@@ -37,7 +36,7 @@ void    SparseHN::train(std::vector<t_iclamped> &clamped)
                 continue ;
             std::vector<double> &w = _tensor.get(clamped[i].id, clamped[j].id);
             double              dx = (i - j) / (double)seq_len;
-            w[0] += std::tanh(1 / dx) * LR;
+            w[0] += std::tanh(1 / dx);
         }
     }
 }
@@ -53,9 +52,9 @@ double  SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
         {
             if (i == j)
                 continue;
-            std::vector<double> &w = _tensor.get(clamped[i].id, clamped[j].id);
-            double              dx = (i - j) / (double) seq_len;
-            energy += dx * w[0];
+            std::vector<double> &w  = _tensor.get(clamped[i].id, clamped[j].id);
+            double              dx  = std::tanh((i - j));
+            energy                  += dx * w[0];
         }
     }
     return energy;
