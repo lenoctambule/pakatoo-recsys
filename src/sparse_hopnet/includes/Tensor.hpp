@@ -1,9 +1,12 @@
 #pragma once
 # include <vector>
+# include <deque>
+# include <map>
 # include <cstddef>
-# define SIZEINC 4096
+# define SIZEINC 8192
 
-typedef std::vector<std::vector<std::vector<double>>> tensor_t;
+typedef std::map<size_t, std::vector<double>>   adj_t;
+typedef std::deque<adj_t>                       tensor_t;
 
 class Tensor
 {
@@ -11,6 +14,7 @@ class Tensor
         tensor_t    _tensor;
         size_t      _N;
         size_t      _depth;
+        size_t      _c;
 
         Tensor();
 
@@ -23,5 +27,5 @@ class Tensor
 
         std::vector<double>     &get(size_t x, size_t y);
         std::vector<double>     &operator()(size_t x, size_t y);
-        void                    extend();
+        size_t                  extend();
 };

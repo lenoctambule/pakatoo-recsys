@@ -1,16 +1,11 @@
 #include "Tensor.hpp"
 #include <vector>
+#include <iostream>
 
 Tensor::Tensor(size_t depth) : _depth(depth),
-                                _tensor(SIZEINC,
-                                    std::vector<std::vector<double>>
-                                    (
-                                        SIZEINC, std::vector<double>(
-                                            depth, 0.0
-                                        )
-                                    )
-                                ),
-                                _N(SIZEINC)
+                                _tensor(),
+                                _N(SIZEINC),
+                                _c(0)
 {
 }
 
@@ -23,17 +18,24 @@ size_t                  Tensor::getDepth() { return _depth; }
 
 std::vector<double>     &Tensor::get(size_t x, size_t y)
 {
-    return (_tensor[y][x]);
+    if (x >= _c)
+        this->extend();
+    auto                line = _tensor[x].find(y);
+    std::vector<double> *ret = NULL;
+
+    if (line == _tensor[x].end())
+        ret = &(_tensor[x][y] = std::vector<double>(_depth, 0.0));
+    else
+        ret = &line->second;
+    return (*ret);
 }
 
-std::vector<double>     &Tensor::operator()(size_t x, size_t y)
-{
+std::vector<double>     &Tensor::operator()(size_t x, size_t y) {
     return get(x, y);
 }
 
-void                    Tensor::extend()
+size_t                  Tensor::extend()
 {
-    for (auto ite = _tensor.begin(); ite != _tensor.end(); ite++)
-        ite->resize(ite->size() + SIZEINC);
-    _N += SIZEINC;
+    _tensor.resize(_c + 1);
+    return (++_c);
 }

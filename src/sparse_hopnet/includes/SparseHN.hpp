@@ -1,9 +1,12 @@
-#include "Node.hpp"
 #include "Tensor.hpp"
 #include <deque>
 #include <vector>
+#include <map>
 #include <iostream>
 #include <cstddef>
+#include <cmath>
+
+#define LR 6.0
 
 typedef struct s_iclamped
 {
@@ -19,8 +22,6 @@ class SparseHN
 
         SparseHN(SparseHN const &a);
         SparseHN    &operator=(SparseHN const &a);
-        /* Get or create a node */
-        Node        *get_or_create(size_t id);
 
     public :
         SparseHN(size_t ctx_len);
