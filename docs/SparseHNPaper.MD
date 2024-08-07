@@ -38,9 +38,9 @@ Thus, in order for our system to be adaptable relative to its environment the ra
 
 $$ Q = {K_L(S) \over K_L(E)} \geq 1 $$
 
-Where $K_L$ is a Kolomogorv complexity for a language $L$ of $S$ a system and $E$ the environement. However, in certain games, simple mimicry (eg. Tit for Tat strategy in Rapoport's work) matches performance of any other strategy because mimicry matches any adversary's strategies in complexity of response just not temporally. In other games where temporality is important, mimic strategies will always underperform because no matter how good of a decision you make, it does not matter if it is too late. We, thus, also need to introduce temporal precedence as a constraint which means that $K_L(S, t) > K_L(E, t+\delta t)$.
+Where $K_L$ is a Kolomogorv complexity for a language $L$ of $S$ a system and $E$ the environement. However, in certain games, simple mimicry (eg. Tit for Tat strategy in Rapoport's work) matches performance of any other strategy because mimicry matches any adversary's strategy in complexity of response just not temporally. In other games where temporality is important, mimic strategies is likely to underperform. We, thus, also need to introduce temporal precedence as a constraint which means that $K_L(S, t) > K_L(E, t+\delta t)$.
 
-However, in order, to ensure that temporality does not hinder performance and to save computation we'll instead state that,
+However, in order, to ensure that the system does not overperform and to save computation we'll instead state that,
 
 $$
 Q_{S/E}(t) = {K_L(S, t) \over K_L(E, t + \delta t)}\approx 1
@@ -58,9 +58,17 @@ $$
 S_{meta} : \prod_{e \in S_{m}} P_e \rightarrow  Q_{S_{m}/S_E}(t) \approx 1
 $$
 
-### A. Guaranteed Liberty Algorithm
+### A. Sparse Activation of Hopfield Network
 
-This property implies that we need to engineer a predictive mirror. The fundamental unit of our system can thus be defined as the ability to consistently minimize surprise as in we need to bridge the gap between actual and expected activity.
+This property implies that we need to engineer a system that is predictive. The fundamental unit of our system can thus be defined as the ability to consistently minimize surprise as in we need to bridge the gap between real/clamped and expected activity.
+
+That is why we introduce Sparse Hopfield Network that allows us to complete partial sequences of tokens from sparse clamped activity of neurons. The main issue with sparsity is that while capturing correlation between values with the classical learning rule (ie. $dw_{1,2} = \mu b_1  b_2$) the network does not take temporality into account. For instance, in the case of language, if the classical learning rule is kept, we can infer the likelihood of a word to be in a sequence rather than infer the likelihood of a sequence of words as a whole.
+
+In order to catter to this problem, we need to introduce positional encoding by adding a dimension to the state of neurons in the network. That is because, for NLP, the meaning of a word is extrinsic to contexts ie. words do not exist on their own.
+
+Instead of the classical $b_i \in \{-1,1\}$, we'll instead use $ b_i \in \{-1,1\}^2$ where we now have vertical and horizontal states.
+
+### B. JIT Complexity implementation through manipulation of simulated annealing cooling schedule
 
 ## Results
 
@@ -71,5 +79,5 @@ This property implies that we need to engineer a predictive mirror. The fundamen
 ## Bibliography
 
 - _Neuronal Dynamics, From single neurons to networks and models of cognition_, Wulfram Gerstner, Werner M. Kistler, Richard Naud and Liam Paninski
-- Hopfield network, John J. Hopfield, Scholarpedia
-- Luczak, A., McNaughton, B.L. & Kubo, Y. Neurons learn by predicting future activity. Nat Mach Intell 4, 62–72 (2022). https://doi.org/10.1038/s42256-021-00430-y
+- _Hopfield network_, John J. Hopfield, Scholarpedia
+- Luczak, A., McNaughton, B.L. & Kubo, Y. _Neurons learn by predicting future activity_. Nat Mach Intell 4, 62–72 (2022). https://doi.org/10.1038/s42256-021-00430-y

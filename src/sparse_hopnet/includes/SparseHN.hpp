@@ -1,9 +1,10 @@
-#include "Node.hpp"
-#include "Matrix.hpp"
+#include "Tensor.hpp"
 #include <deque>
 #include <vector>
+#include <map>
 #include <iostream>
 #include <cstddef>
+#include <cmath>
 
 typedef struct s_iclamped
 {
@@ -11,26 +12,16 @@ typedef struct s_iclamped
     double      val;
 } t_iclamped;
 
-typedef struct s_sclamped
-{
-    std::string token;
-    double      val;
-} t_sclamped;
-
 class SparseHN
 {
     private :
-        Matrix<Node>                    _nodes;
-        size_t                          _ctx_len;
+        Tensor                         _tensor;
 
         SparseHN(SparseHN const &a);
-        SparseHN   &operator=(SparseHN const &a);
-        /* Get or create a node */
-        Node    *get_or_create(size_t id);
-        Node    *get_or_create(std::string const &key);
+        SparseHN    &operator=(SparseHN const &a);
 
     public :
-        SparseHN(size_t ctx_len);
+        SparseHN();
         SparseHN(std::string const &path);
         ~SparseHN();
 
@@ -38,8 +29,7 @@ class SparseHN
         void    save(std::string const &path);
         void    load(std::string const &path);
         /* Train using either series of clamped nodes or item-item similarity */
-        void    train(std::vector<Node &> clamped_nodes);
-        void    train(size_t a_1, size_t a_2, double d_w);
+        void    train(std::vector<t_iclamped> &clamped);
         /* Infer next likeliest <out_size> items from a series of user interactions */
-        std::vector<std::size_t>    infer(std::vector<Node&> pattern, size_t out_size);
+        double  seq_energy(std::vector<t_iclamped> &clamped);
 };
