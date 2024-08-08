@@ -32,31 +32,31 @@ std::vector<double>     &Tensor::operator()(size_t x, size_t y) {
     return get(x, y);
 }
 
-void                    Tensor::save_adj(std::string const &path, size_t idx)
+void                    Tensor::save_adj(std::string const &path, std::ofstream &out, size_t idx)
 {
-    std::ofstream out;
+    size_t  len = _tensor[idx].size();
 
-    out.open(path, std::fstream::out);
-    out << FSIG;
+    out.write(reinterpret_cast<const char *>(&len), std::streamsize(sizeof(size_t)));
     for (auto ite = _tensor[idx].begin(); ite != _tensor[idx].end(); ite++)
     {
         out.write(reinterpret_cast<const char *>(&ite->first), std::streamsize(sizeof(size_t)));
-        out.write(reinterpret_cast<const char *>(&ite->second[0]), std::streamsize(sizeof(double)));
+        for (size_t i = 0; i < ite->second.size(); i++)
+            out.write(reinterpret_cast<const char *>(&ite->second[i]), std::streamsize(sizeof(double)));
     }
 }
 
 void                    Tensor::save(std::string const &path)
 {
-    if (mkdir(path.c_str(), S_IRWXU) < 0)
-        throw std::runtime_error("Could not create directory.");
+    std::ofstream       out;
+    std::stringstream   filename;
+
+    out.open(path, std::fstream::out);
+    if (!out.is_open())
+        throw std::runtime_error("Could not open or create file.");
+    out << FSIG;
+    out.write(reinterpret_cast<const char *>(&_depth), std::streamsize(sizeof(size_t)));
     for (size_t i = 0; i < _tensor.size(); i++)
-    {
-
-        std::stringstream   filename;
-
-        filename << path << "/" << i << ".pk2";
-        save_adj(filename.str(), i);
-    }
+        save_adj(filename.str(), out, i);
 }
 
 void                Tensor::load(std::string const &path)

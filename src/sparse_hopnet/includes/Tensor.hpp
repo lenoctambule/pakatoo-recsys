@@ -19,7 +19,7 @@ class Tensor
         size_t      _depth;
 
         Tensor();
-        void    save_adj(std::string const &path, size_t idx);
+        void    save_adj(std::string const &path, std::ofstream &out, size_t idx);
 
     public :
         Tensor(size_t _depth);

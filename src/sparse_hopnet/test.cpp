@@ -32,7 +32,7 @@ int main(int ac, char **av)
 
     while (harry >> word)
     {
-        if (seq.size() >= 1024)
+        if (seq.size() >= 32)
         {
             hnet.train(seq);
             seq.clear();
@@ -53,4 +53,6 @@ int main(int ac, char **av)
 
     energy(s2, seq, hnet, tokens);
     energy(s1, seq, hnet, tokens);
+
+    hnet.save("test.pk2");
 }

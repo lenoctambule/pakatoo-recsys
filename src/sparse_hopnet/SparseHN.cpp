@@ -13,9 +13,13 @@ SparseHN::~SparseHN()
 {
 }
 
-void    SparseHN::load(std::string const &path)
-{
-    /* TBD */
+void    SparseHN::save(std::string const &path) {
+    _tensor.save(path);
+}
+
+
+void    SparseHN::load(std::string const &path) {
+    _tensor.load(path);
 }
 
 static double   dwdt(double x)
