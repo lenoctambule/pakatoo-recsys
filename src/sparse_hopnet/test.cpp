@@ -3,10 +3,12 @@
 #include <fstream>
 #include <sstream>
 
-static void energy(std::stringstream &s, std::vector<t_iclamped> seq, SparseHN &hnet, std::map<std::string, size_t> tokens)
+static double energy(std::stringstream &s, std::vector<t_iclamped> seq, SparseHN &hnet, std::map<std::string, size_t> tokens)
 {
     std::string word;
+    double      ret;
 
+    std::cout << s.str() << std::endl;
     seq.clear();
     while (s >> word)
     {
@@ -14,7 +16,9 @@ static void energy(std::stringstream &s, std::vector<t_iclamped> seq, SparseHN &
         if (ite != tokens.end() && ite->second < 4096)
             seq.push_back(t_iclamped{.id=ite->second});
     }
-    std::cout << "Energy : " << hnet.seq_energy(seq) << std::endl;
+    ret = hnet.seq_energy(seq);
+    std::cout << "Energy : " << ret << std::endl;
+    return ret;
 }
 
 int main(int ac, char **av)
@@ -28,11 +32,10 @@ int main(int ac, char **av)
 
     while (harry >> word)
     {
-        if (seq.size() >= 1024)
+        if (seq.size() >= 128)
         {
             hnet.train(seq);
             seq.clear();
-            std::cout << "Sequence complete. |T|=" << tokens.size() <<std::endl;
         }
         auto ite = tokens.find(word);
         if (ite == tokens.end())
@@ -48,8 +51,6 @@ int main(int ac, char **av)
     std::stringstream s1("She Dumbledore a , sideways glance at threw  here, as though sharp hoping");
     std::stringstream s2("She threw a sharp, sideways glance at Dumbledore here, as though hoping");
 
-    std::cout << s1.str() << std::endl;
-    energy(s1, seq, hnet, tokens);
-    std::cout << s2.str() << std::endl;
     energy(s2, seq, hnet, tokens);
+    energy(s1, seq, hnet, tokens);
 }
