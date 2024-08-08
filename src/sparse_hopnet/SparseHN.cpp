@@ -22,7 +22,7 @@ void    SparseHN::load(std::string const &path) {
     _tensor.load(path);
 }
 
-static double   dwdt(double x)
+static float   dwdt(float x)
 {
     return std::exp(-std::pow(x,2)) * (std::signbit(x) * 2 - 1);
 }
@@ -37,18 +37,18 @@ void    SparseHN::train(std::vector<t_iclamped> &clamped)
         {
             if (i == j)
                 continue ;
-            std::vector<double> &w = _tensor.get(clamped[i].id, clamped[j].id);
-            double              dx = (i - j) / (double)seq_len;
+            std::vector<float> &w = _tensor.get(clamped[i].id, clamped[j].id);
+            float              dx = (i - j) / (float)seq_len;
             w[0]                   += dwdt(1 / dx);
         }
     }
 }
 
-double  SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
+float  SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
 {
     size_t  seq_len = clamped.size();
-    double  energy = 0;
-    double  q = 0;
+    float  energy = 0;
+    float  q = 0;
 
     for (int i = 0; i < seq_len; i++)
     {
@@ -56,8 +56,8 @@ double  SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
         {
             if (i == j)
                 continue;
-            std::vector<double> &w  = _tensor.get(clamped[i].id, clamped[j].id);
-            double              dx  = (i - j) / (double)seq_len;
+            std::vector<float> &w  = _tensor.get(clamped[i].id, clamped[j].id);
+            float              dx  = (i - j) / (float)seq_len;
             energy                  += dx * w[0];
         }
     }

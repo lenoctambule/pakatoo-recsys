@@ -3,10 +3,10 @@
 #include <fstream>
 #include <sstream>
 
-static double energy(std::stringstream &s, std::vector<t_iclamped> seq, SparseHN &hnet, std::map<std::string, size_t> tokens)
+static float energy(std::stringstream &s, std::vector<t_iclamped> seq, SparseHN &hnet, std::map<std::string, size_t> tokens)
 {
     std::string word;
-    double      ret;
+    float      ret;
 
     std::cout << s.str() << std::endl;
     seq.clear();
