@@ -32,7 +32,7 @@ int main(int ac, char **av)
 
     while (harry >> word)
     {
-        if (seq.size() >= 128)
+        if (seq.size() >= 1024)
         {
             hnet.train(seq);
             seq.clear();

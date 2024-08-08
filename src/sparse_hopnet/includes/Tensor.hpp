@@ -3,7 +3,11 @@
 # include <deque>
 # include <map>
 # include <cstddef>
-# define SIZEINC 8192
+# include <fstream>
+# include <sstream>
+# include <sys/stat.h>
+
+# define FSIG "PK2\00"
 
 typedef std::map<size_t, std::vector<double>>   adj_t;
 typedef std::deque<adj_t>                       tensor_t;
@@ -12,11 +16,10 @@ class Tensor
 {
     private :
         tensor_t    _tensor;
-        size_t      _N;
         size_t      _depth;
-        size_t      _c;
 
         Tensor();
+        void    save_adj(std::string const &path, size_t idx);
 
     public :
         Tensor(size_t _depth);
@@ -27,5 +30,6 @@ class Tensor
 
         std::vector<double>     &get(size_t x, size_t y);
         std::vector<double>     &operator()(size_t x, size_t y);
-        size_t                  extend();
+        void                    save(std::string const &path);
+        void                    load(std::string const &path);
 };

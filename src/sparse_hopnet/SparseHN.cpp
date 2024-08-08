@@ -33,8 +33,6 @@ void    SparseHN::train(std::vector<t_iclamped> &clamped)
         {
             if (i == j)
                 continue ;
-            if (clamped[i].id >= _tensor.size() || clamped[j].id >= _tensor.size())
-                continue ;
             std::vector<double> &w = _tensor.get(clamped[i].id, clamped[j].id);
             double              dx = (i - j) / (double)seq_len;
             w[0]                   += dwdt(1 / dx);
