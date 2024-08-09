@@ -65,21 +65,22 @@ void                Tensor::load_adj(std::ifstream &in)
     size_t              len;
     size_t              target_id;
     std::vector<float>  w;
-    char                buff[8];
+    char                sbuf[8];
+    char                fbuf[4];
 
-    in.read(buff, sizeof(size_t));
-    self_id = *reinterpret_cast<size_t *>(buff);
-    in.read(buff, sizeof(size_t));
-    len = *reinterpret_cast<size_t *>(buff);
+    in.read(sbuf, sizeof(size_t));
+    self_id = *reinterpret_cast<size_t *>(sbuf);
+    in.read(sbuf, sizeof(size_t));
+    len = *reinterpret_cast<size_t *>(sbuf);
     w.resize(_depth);
     for (size_t i = 0; i < len; i++)
     {
-        in.read(buff, sizeof(size_t));
-        target_id = *buff;
+        in.read(sbuf, sizeof(size_t));
+        target_id = *reinterpret_cast<size_t *>(sbuf);
         for (size_t j = 0; j < _depth; j++)
         {
-            in.read(buff, sizeof(float));
-            w.push_back(*reinterpret_cast<float *>(buff));
+            in.read(fbuf, sizeof(float));
+            w.push_back(*reinterpret_cast<float *>(fbuf));
         }
         _tensor[self_id][target_id] = w;
         w.clear();
