@@ -18,14 +18,10 @@ std::vector<float>     &Tensor::get(size_t x, size_t y)
 {
     if (x >= _tensor.size())
         _tensor.resize(x + 1);
-    auto                line = _tensor[x].find(y);
-    std::vector<float> *ret = NULL;
-
+    auto    line = _tensor[x].find(y);
     if (line == _tensor[x].end())
-        ret = &(_tensor[x][y] = std::vector<float>(_depth, 0.0));
-    else
-        ret = &line->second;
-    return (*ret);
+        return (_tensor[x][y] = std::vector<float>(_depth, 0.0));
+    return (line->second);
 }
 
 std::vector<float>      &Tensor::operator()(size_t x, size_t y) {
@@ -50,17 +46,62 @@ void                    Tensor::save(std::string const &path)
 {
     std::ofstream       out;
     std::stringstream   filename;
+    size_t              n_tokens;
 
     out.open(path, std::fstream::out);
     if (!out.is_open())
         throw std::runtime_error("Could not open or create file.");
-    out << FSIG;
+    out.write(FSIG, 4);
     out.write(reinterpret_cast<const char *>(&_depth), std::streamsize(sizeof(size_t)));
+    n_tokens = _tensor.size();
+    out.write(reinterpret_cast<const char *>(&n_tokens), std::streamsize(sizeof(size_t)));
     for (size_t i = 0; i < _tensor.size(); i++)
         save_adj(filename.str(), out, i);
 }
 
+void                Tensor::load_adj(std::ifstream &in)
+{
+    size_t              self_id;
+    size_t              len;
+    size_t              target_id;
+    std::vector<float>  w;
+    char                buff[8];
+
+    in.read(buff, sizeof(size_t));
+    self_id = *reinterpret_cast<size_t *>(buff);
+    in.read(buff, sizeof(size_t));
+    len = *reinterpret_cast<size_t *>(buff);
+    w.resize(_depth);
+    for (size_t i = 0; i < len; i++)
+    {
+        in.read(buff, sizeof(size_t));
+        target_id = *buff;
+        for (size_t j = 0; j < _depth; j++)
+        {
+            in.read(buff, sizeof(float));
+            w.push_back(*reinterpret_cast<float *>(buff));
+        }
+        _tensor[self_id][target_id] = w;
+        w.clear();
+    }
+}
+
 void                Tensor::load(std::string const &path)
 {
-    
+    std::ifstream   in;
+    char            buff[8];
+    size_t          n_tokens;
+
+    in.open(path, std::fstream::in);
+    if (!in.is_open())
+        throw std::runtime_error("could not open or create file");
+    in.read(buff, 4);
+    in.read(buff, sizeof(size_t));
+    _depth = *reinterpret_cast<size_t *>(buff);
+    in.read(buff, sizeof(size_t));
+    n_tokens = *reinterpret_cast<size_t *>(buff);
+    _tensor.clear();
+    _tensor.resize(n_tokens);
+    for (size_t i = 0; i < n_tokens; i++)
+        load_adj(in);
 }

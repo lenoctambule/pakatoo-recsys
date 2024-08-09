@@ -29,6 +29,8 @@ int main(int ac, char **av)
     std::vector<t_iclamped>         seq;
     std::ifstream harry("./harry.txt");
     std::string word;
+    std::string a1("She Dumbledore a , sideways glance at threw  here, as though sharp hoping");
+    std::string a2("She threw a sharp, sideways glance at Dumbledore here, as though hoping");
 
     while (harry >> word)
     {
@@ -48,11 +50,22 @@ int main(int ac, char **av)
             seq.push_back(t_iclamped{.id=ite->second});
     }
 
-    std::stringstream s1("She Dumbledore a , sideways glance at threw  here, as though sharp hoping");
-    std::stringstream s2("She threw a sharp, sideways glance at Dumbledore here, as though hoping");
+    std::stringstream s1(a1);
+    std::stringstream s2(a2);
 
     energy(s2, seq, hnet, tokens);
     energy(s1, seq, hnet, tokens);
 
     hnet.save("test.pk2");
+
+    SparseHN hnet_cpy;
+
+    hnet_cpy.load("test.pk2");
+
+    s2.seekg(0,std::ios::beg); s2.clear();
+    s1.seekg(0,std::ios::beg); s1.clear();
+    s1.str(a1);
+    s2.str(a2);
+    energy(s2, seq, hnet_cpy, tokens);
+    energy(s1, seq, hnet_cpy, tokens);
 }

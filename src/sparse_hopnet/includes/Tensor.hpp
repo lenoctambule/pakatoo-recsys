@@ -21,6 +21,7 @@ class Tensor
 
         Tensor();
         void    save_adj(std::string const &path, std::ofstream &out, size_t idx);
+        void    load_adj(std::ifstream &in);
 
     public :
         Tensor(size_t _depth);
