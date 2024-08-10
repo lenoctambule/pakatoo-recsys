@@ -1,4 +1,5 @@
 #pragma once
+
 # include <vector>
 # include <deque>
 # include <map>
@@ -20,6 +21,9 @@ class Tensor
         size_t      _depth;
 
         Tensor();
+        Tensor(Tensor const &a);
+        Tensor  &operator=(Tensor const &a);
+
         void    save_adj(std::string const &path, std::ofstream &out, size_t idx);
         void    load_adj(std::ifstream &in);
 

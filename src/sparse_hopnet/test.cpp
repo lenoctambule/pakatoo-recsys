@@ -14,7 +14,7 @@ static float energy(std::stringstream &s, std::vector<t_iclamped> seq, SparseHN 
     {
         auto ite = tokens.find(word);
         if (ite != tokens.end() && ite->second < 4096)
-            seq.push_back(t_iclamped{.id=ite->second});
+            seq.push_back(t_iclamped{.id=ite->second, .val=1});
     }
     ret = hnet.seq_energy(seq);
     std::cout << "Energy : " << ret << std::endl;
@@ -29,7 +29,7 @@ int main(int ac, char **av)
     std::vector<t_iclamped>         seq;
     std::ifstream harry("./harry.txt");
     std::string word;
-    std::string a1("She Dumbledore a , sideways glance at threw  here, as though sharp hoping");
+    std::string a1("She Dumbledore a sideways glance at threw here, as though sharp, hoping");
     std::string a2("She threw a sharp, sideways glance at Dumbledore here, as though hoping");
 
     while (harry >> word)
@@ -47,7 +47,7 @@ int main(int ac, char **av)
             gid++;
         }
         else
-            seq.push_back(t_iclamped{.id=ite->second});
+            seq.push_back(t_iclamped{.id=ite->second, .val=1});
     }
 
     std::stringstream s1(a1);

@@ -22,9 +22,9 @@ void    SparseHN::load(std::string const &path) {
     _tensor.load(path);
 }
 
-static float   dwdt(float x)
+static float   clamp(float x)
 {
-    return std::exp(-std::pow(x,2)) * (std::signbit(x) * 2 - 1);
+    return std::min(1.0f, std::max(-1.0f, x));
 }
 
 void    SparseHN::train(std::vector<t_iclamped> &clamped)
@@ -37,29 +37,39 @@ void    SparseHN::train(std::vector<t_iclamped> &clamped)
         {
             if (i == j)
                 continue ;
-            std::vector<float> &w = _tensor.get(clamped[i].id, clamped[j].id);
-            float              dx = (i - j) / (float)seq_len;
-            w[0]                   += dwdt(1 / dx);
+            std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
+            float              dx   = (i - j) / (float)seq_len;
+            w[0]                    += clamp(1 / dx);
+            w[1]                    += clamped[i].val * clamped[j].val;
         }
     }
 }
 
-float  SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
+float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
+                                int i,
+                                size_t seq_len)
+{
+    float   energy  = 0;
+    for (int j = 0; j < seq_len; j++)
+    {
+        if (i == j)
+            continue;
+        std::vector<float> &w  = _tensor.get(clamped[i].id, clamped[j].id);
+        float              dx  = (i - j) / (float)seq_len;
+        energy                  += w[0] * dx * clamp(w[1] * clamped[i].val * clamped[j].val);
+    }
+    return energy;
+}
+
+float   SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
 {
     size_t  seq_len = clamped.size();
     float  energy = 0;
     float  q = 0;
 
     for (int i = 0; i < seq_len; i++)
-    {
-        for (int j = 0; j < seq_len; j++)
-        {
-            if (i == j)
-                continue;
-            std::vector<float> &w  = _tensor.get(clamped[i].id, clamped[j].id);
-            float              dx  = (i - j) / (float)seq_len;
-            energy                  += dx * w[0];
-        }
-    }
+        energy += token_energy(clamped, i, seq_len);
     return energy;
 }
+
+
