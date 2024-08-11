@@ -1,6 +1,6 @@
 #include "SparseHN.hpp"
 
-SparseHN::SparseHN() : _tensor(1)
+SparseHN::SparseHN() : _tensor(2)
 {
 }
 
@@ -54,8 +54,8 @@ float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
     {
         if (i == j)
             continue;
-        std::vector<float> &w  = _tensor.get(clamped[i].id, clamped[j].id);
-        float              dx  = (i - j) / (float)seq_len;
+        std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
+        float              dx   = (i - j) / (float)seq_len;
         energy                  += w[0] * dx * clamp(w[1] * clamped[i].val * clamped[j].val);
     }
     return energy;
@@ -71,5 +71,4 @@ float   SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
         energy += token_energy(clamped, i, seq_len);
     return energy;
 }
-
 
