@@ -3,10 +3,10 @@
 #include <fstream>
 #include <sstream>
 
-static float energy(std::stringstream &s, std::vector<t_iclamped> seq, SparseHN &hnet, std::map<std::string, size_t> tokens)
+static float energy(std::stringstream &s, std::vector<t_iclamped> &seq, SparseHN &hnet, std::map<std::string, size_t> tokens)
 {
     std::string word;
-    float      ret;
+    float       ret;
 
     std::cout << s.str() << std::endl;
     seq.clear();
@@ -25,7 +25,8 @@ int main(int ac, char **av)
 {
     SparseHN                    hnet;
     size_t  gid = 0;
-    std::map<std::string, size_t>   tokens; 
+    std::map<std::string, size_t>   tokens;
+    std::map<size_t, std::string>   word2id;
     std::vector<t_iclamped>         seq;
     std::ifstream harry("./harry.txt");
     std::string word;
@@ -43,6 +44,7 @@ int main(int ac, char **av)
         if (ite == tokens.end())
         {
             tokens[word] = gid;
+            word2id[gid] = word;
             seq.push_back(t_iclamped{.id=gid});
             gid++;
         }
@@ -66,6 +68,15 @@ int main(int ac, char **av)
     s1.seekg(0,std::ios::beg); s1.clear();
     s1.str(a1);
     s2.str(a2);
-    energy(s2, seq, hnet_cpy, tokens);
     energy(s1, seq, hnet_cpy, tokens);
+    energy(s2, seq, hnet_cpy, tokens);
+
+    s1.seekg(0,std::ios::beg); s1.clear();
+    std::cout << hnet.seq_energy(seq) << std::endl;
+    for (size_t i = 0; i < seq.size(); i++)
+         s1 << word2id[seq[i].id] << " ";
+    for (size_t i = 0; i < 2; i++)
+        s1 << word2id[hnet_cpy.infer(seq)] << " ";
+    std::cout << hnet.seq_energy(seq) << std::endl;
+    std::cout << s1.str() << std::endl;
 }

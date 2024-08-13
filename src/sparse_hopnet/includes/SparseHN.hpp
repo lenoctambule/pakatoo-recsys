@@ -7,6 +7,7 @@
 # include <iostream>
 # include <cstddef>
 # include <cmath>
+# include <limits>
 
 typedef struct s_iclamped
 {
@@ -32,7 +33,7 @@ class SparseHN
         void    load(std::string const &path);
         /* Train using either series of clamped nodes or item-item similarity */
         void    train(std::vector<t_iclamped> &clamped);
-        void    infer(std::vector<t_iclamped> &clamped);
+        size_t  infer(std::vector<t_iclamped> &clamped);
         float   token_energy(std::vector<t_iclamped> &clamped,
                                 int i,
                                 size_t seq_len);
