@@ -1,21 +1,24 @@
-#include "Tensor.hpp"
-#include <deque>
-#include <vector>
-#include <map>
-#include <iostream>
-#include <cstddef>
-#include <cmath>
+#pragma once
+
+# include "Tensor.hpp"
+# include <deque>
+# include <vector>
+# include <map>
+# include <iostream>
+# include <cstddef>
+# include <cmath>
+# include <limits>
 
 typedef struct s_iclamped
 {
     size_t      id;
-    double      val;
+    float       val;
 } t_iclamped;
 
 class SparseHN
 {
     private :
-        Tensor                         _tensor;
+        Tensor                          _tensor;
 
         SparseHN(SparseHN const &a);
         SparseHN    &operator=(SparseHN const &a);
@@ -30,6 +33,10 @@ class SparseHN
         void    load(std::string const &path);
         /* Train using either series of clamped nodes or item-item similarity */
         void    train(std::vector<t_iclamped> &clamped);
+        size_t  infer(std::vector<t_iclamped> &clamped);
+        float   token_energy(std::vector<t_iclamped> &clamped,
+                                int i,
+                                size_t seq_len);
         /* Infer next likeliest <out_size> items from a series of user interactions */
-        double  seq_energy(std::vector<t_iclamped> &clamped);
+        float   seq_energy(std::vector<t_iclamped> &clamped);
 };

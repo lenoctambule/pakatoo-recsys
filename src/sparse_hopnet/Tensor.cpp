@@ -3,9 +3,7 @@
 #include <iostream>
 
 Tensor::Tensor(size_t depth) : _depth(depth),
-                                _tensor(),
-                                _N(SIZEINC),
-                                _c(0)
+                                _tensor()
 {
 }
 
@@ -13,29 +11,98 @@ Tensor::~Tensor()
 {
 }
 
-size_t                  Tensor::size() { return _N; }
+size_t                  Tensor::size() { return _tensor.size(); }
 size_t                  Tensor::getDepth() { return _depth; }
 
-std::vector<double>     &Tensor::get(size_t x, size_t y)
+std::vector<float>     &Tensor::get(size_t x, size_t y)
 {
-    if (x >= _c)
-        this->extend();
-    auto                line = _tensor[x].find(y);
-    std::vector<double> *ret = NULL;
-
+    if (x >= _tensor.size())
+        _tensor.resize(x + 1);
+    auto    line = _tensor[x].find(y);
     if (line == _tensor[x].end())
-        ret = &(_tensor[x][y] = std::vector<double>(_depth, 0.0));
-    else
-        ret = &line->second;
-    return (*ret);
+        return (_tensor[x][y] = std::vector<float>(_depth, 0.0));
+    return (line->second);
 }
 
-std::vector<double>     &Tensor::operator()(size_t x, size_t y) {
+std::vector<float>      &Tensor::operator()(size_t x, size_t y) {
     return get(x, y);
 }
 
-size_t                  Tensor::extend()
+void                    Tensor::save_adj(std::string const &path, std::ofstream &out, size_t idx)
 {
-    _tensor.resize(_c + 1);
-    return (++_c);
+    size_t  len = _tensor[idx].size();
+
+    out.write(reinterpret_cast<const char *>(&idx), std::streamsize(sizeof(size_t)));
+    out.write(reinterpret_cast<const char *>(&len), std::streamsize(sizeof(size_t)));
+    for (auto ite = _tensor[idx].begin(); ite != _tensor[idx].end(); ite++)
+    {
+        out.write(reinterpret_cast<const char *>(&ite->first), std::streamsize(sizeof(size_t)));
+        for (size_t i = 0; i < ite->second.size(); i++)
+            out.write(reinterpret_cast<const char *>(&ite->second[i]), std::streamsize(sizeof(float)));
+    }
+}
+
+void                    Tensor::save(std::string const &path)
+{
+    std::ofstream       out;
+    std::stringstream   filename;
+    size_t              n_tokens;
+
+    out.open(path, std::fstream::out);
+    if (!out.is_open())
+        throw std::runtime_error("Could not open or create file.");
+    out.write(FSIG, 4);
+    out.write(reinterpret_cast<const char *>(&_depth), std::streamsize(sizeof(size_t)));
+    n_tokens = _tensor.size();
+    out.write(reinterpret_cast<const char *>(&n_tokens), std::streamsize(sizeof(size_t)));
+    for (size_t i = 0; i < _tensor.size(); i++)
+        save_adj(filename.str(), out, i);
+}
+
+void                Tensor::load_adj(std::ifstream &in)
+{
+    size_t              self_id;
+    size_t              len;
+    size_t              target_id;
+    std::vector<float>  w;
+    char                sbuf[8];
+    char                fbuf[4];
+
+    in.read(sbuf, sizeof(size_t));
+    self_id = *reinterpret_cast<size_t *>(sbuf);
+    in.read(sbuf, sizeof(size_t));
+    len = *reinterpret_cast<size_t *>(sbuf);
+    w.resize(_depth);
+    for (size_t i = 0; i < len; i++)
+    {
+        in.read(sbuf, sizeof(size_t));
+        target_id = *reinterpret_cast<size_t *>(sbuf);
+        for (size_t j = 0; j < _depth; j++)
+        {
+            in.read(fbuf, sizeof(float));
+            w.push_back(*reinterpret_cast<float *>(fbuf));
+        }
+        _tensor[self_id][target_id] = w;
+        w.clear();
+    }
+}
+
+void                Tensor::load(std::string const &path)
+{
+    std::ifstream   in;
+    char            buff[8];
+    size_t          n_tokens;
+
+    in.open(path, std::fstream::in);
+    if (!in.is_open())
+        throw std::runtime_error("could not open or create file");
+    in.read(buff, 4);
+    in.read(buff, sizeof(size_t));
+    _depth = *reinterpret_cast<size_t *>(buff);
+    in.read(buff, sizeof(size_t));
+    n_tokens = *reinterpret_cast<size_t *>(buff);
+    _tensor.clear();
+    _tensor.resize(n_tokens);
+    for (size_t i = 0; i < n_tokens; i++)
+        load_adj(in);
 }
