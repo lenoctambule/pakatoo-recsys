@@ -1,6 +1,7 @@
 #pragma once
 
 # include "Tensor.hpp"
+# include "utils.hpp"
 # include <deque>
 # include <vector>
 # include <map>

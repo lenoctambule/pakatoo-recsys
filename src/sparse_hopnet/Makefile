@@ -1,7 +1,7 @@
 CC		= c++
 FLAGS	= -g
 INCS	= -I./includes
-SRCS	= SparseHN.cpp Tensor.cpp test.cpp
+SRCS	= SparseHN.cpp Tensor.cpp utils.cpp test.cpp
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
 NAME	= slm_test

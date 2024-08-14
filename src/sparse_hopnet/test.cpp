@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 
-static float energy(std::stringstream &s, std::vector<t_iclamped> &seq, SparseHN &hnet, std::map<std::string, size_t> tokens)
+static float energy(std::stringstream &s, std::vector<t_iclamped> &seq, SparseHN &hnet, std::unordered_map<std::string, size_t> tokens)
 {
     std::string word;
     float       ret;
@@ -21,17 +21,28 @@ static float energy(std::stringstream &s, std::vector<t_iclamped> &seq, SparseHN
     return ret;
 }
 
+static void clean_word(std::string &word)
+{
+    for (size_t i = 0; i < word.size(); i++)
+    {
+        if (!std::isalpha(word[i]))
+            word.erase(i);
+        else if (std::isupper(word[i]))
+            word[i] = 'a' + word[i] % 'A';
+    }
+}
+
 int main(int ac, char **av)
 {
     SparseHN                    hnet;
     size_t  gid = 0;
-    std::map<std::string, size_t>   tokens;
-    std::map<size_t, std::string>   word2id;
+    std::unordered_map<std::string, size_t>   tokens;
+    std::unordered_map<size_t, std::string>   word2id;
     std::vector<t_iclamped>         seq;
     std::ifstream harry("./harry.txt");
     std::string word;
-    std::string a1("She Dumbledore a sideways glance at threw here, as though sharp, hoping");
-    std::string a2("She threw a sharp, sideways glance at Dumbledore here, as though hoping");
+    std::string a1("she dumbledore a sideways glance at threw here as though sharp hoping");
+    std::string a2("she threw a sharp sideways glance at dumbledore here as though hoping");
 
     while (harry >> word)
     {
@@ -40,6 +51,9 @@ int main(int ac, char **av)
             hnet.train(seq);
             seq.clear();
         }
+        clean_word(word);
+        if (word.size() == 0)
+            continue ;
         auto ite = tokens.find(word);
         if (ite == tokens.end())
         {
@@ -51,12 +65,13 @@ int main(int ac, char **av)
         else
             seq.push_back(t_iclamped{.id=ite->second, .val=1});
     }
+    std::cout << tokens.size() << " " << word2id.size() << std::endl;
 
     std::stringstream s1(a1);
     std::stringstream s2(a2);
 
-    energy(s2, seq, hnet, tokens);
     energy(s1, seq, hnet, tokens);
+    energy(s2, seq, hnet, tokens);
 
     hnet.save("test.pk2");
 
@@ -74,8 +89,8 @@ int main(int ac, char **av)
     s1.seekg(0,std::ios::beg); s1.clear();
     std::cout << hnet.seq_energy(seq) << std::endl;
     for (size_t i = 0; i < seq.size(); i++)
-         s1 << word2id[seq[i].id] << " ";
-    for (size_t i = 0; i < 2; i++)
+        s1 << word2id[seq[i].id] << " ";
+    for (size_t i = 0; i < 10; i++)
         s1 << word2id[hnet_cpy.infer(seq)] << " ";
     std::cout << hnet.seq_energy(seq) << std::endl;
     std::cout << s1.str() << std::endl;

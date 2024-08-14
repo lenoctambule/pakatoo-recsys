@@ -2,7 +2,7 @@
 
 # include <vector>
 # include <deque>
-# include <map>
+# include <unordered_map>
 # include <cstddef>
 # include <fstream>
 # include <sstream>
@@ -10,9 +10,8 @@
 
 # define FSIG "PK2\00"
 
-typedef std::map<size_t, std::vector<float>>   adj_t;
-typedef std::deque<adj_t>                       tensor_t;
-
+typedef std::unordered_map<size_t, std::vector<float>>   adj_t;
+typedef std::deque<adj_t>                                tensor_t;
 
 class Tensor
 {
