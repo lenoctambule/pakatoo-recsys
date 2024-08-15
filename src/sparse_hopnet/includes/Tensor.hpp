@@ -34,6 +34,7 @@ class Tensor
         size_t                  getDepth();
 
         std::vector<float>      &get(size_t x, size_t y);
+        std::vector<float>      get_dup(size_t x, size_t y) const;
         std::vector<float>      &operator()(size_t x, size_t y);
         void                    save(std::string const &path);
         void                    load(std::string const &path);

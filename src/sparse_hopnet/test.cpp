@@ -90,7 +90,7 @@ int main(int ac, char **av)
     std::cout << hnet.seq_energy(seq) << std::endl;
     for (size_t i = 0; i < seq.size(); i++)
         s1 << word2id[seq[i].id] << " ";
-    for (size_t i = 0; i < 10; i++)
+    for (size_t i = 0; i < 3; i++)
         s1 << word2id[hnet_cpy.infer(seq)] << " ";
     std::cout << hnet.seq_energy(seq) << std::endl;
     std::cout << s1.str() << std::endl;

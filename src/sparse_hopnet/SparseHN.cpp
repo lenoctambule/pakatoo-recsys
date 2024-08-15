@@ -1,10 +1,10 @@
 #include "SparseHN.hpp"
 
-SparseHN::SparseHN() : _tensor(1)
+SparseHN::SparseHN() : _tensor(2)
 {
 }
 
-SparseHN::SparseHN(std::string const &path) : _tensor(1)
+SparseHN::SparseHN(std::string const &path) : _tensor(2)
 {
     load(path);
 }
@@ -33,8 +33,9 @@ void    SparseHN::train(std::vector<t_iclamped> &clamped)
             if (i == j)
                 continue ;
             std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
-            float              dx   = (i - j) / (float)seq_len;
-            w[0]                    += (1 / dx) * clamped[i].val * clamped[j].val;
+            float              dx   = (i - j) / (float) seq_len;
+            w[0]                    += clamped[i].val * clamped[j].val;
+            w[1]                    += clamp(1 / dx, 2);
         }
     }
 }
@@ -50,8 +51,9 @@ float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
         if (i == j)
             continue;
         std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
-        float              dx   = (i - j) / (float)seq_len;
-        E                  += w[0] * (1 / dx) * clamped[i].val * clamped[j].val;;
+        float              dx   = (i - j) / (float) seq_len;
+        E                       += w[0] * clamped[i].val * clamped[j].val;
+        E                       += w[1] * clamp(1/dx,1);
     }
     return E;
 }
@@ -67,6 +69,18 @@ float   SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
     return E;
 }
 
+float   SparseHN::eval(std::vector<t_iclamped> &clamped, size_t id)
+{
+    std::vector<t_iclamped> seq(clamped);
+    float                   pre_E, post_E;
+
+    seq.push_back(t_iclamped{.id=id, .val=1});
+    pre_E = seq_energy(seq);
+    seq[seq.size()-1].val = -1;
+    post_E = seq_energy(seq);
+    return tanh(pre_E - post_E);
+}
+
 size_t  SparseHN::infer(std::vector<t_iclamped> &clamped)
 {
     size_t max_id = 0;
@@ -78,14 +92,13 @@ size_t  SparseHN::infer(std::vector<t_iclamped> &clamped)
     for (size_t id = 0; id < _tensor.size(); id++)
     {
         seq[seq.size()-1].id = id;
-        E = token_energy(seq, seq.size() - 1, seq.size());
+        E = seq_energy(seq);
         if (E > max_E)
         {
             max_E       = E;
             max_id      = id;
         }
     }
-    clamped.push_back(t_iclamped{.id=max_id, .val=1});
     return max_id;
 }
 

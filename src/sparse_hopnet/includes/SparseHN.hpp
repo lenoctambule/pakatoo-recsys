@@ -35,6 +35,7 @@ class SparseHN
         /* Train using either series of clamped nodes or item-item similarity */
         void    train(std::vector<t_iclamped> &clamped);
         size_t  infer(std::vector<t_iclamped> &clamped);
+        float   eval(std::vector<t_iclamped> &clamped, size_t id);
         float   token_energy(std::vector<t_iclamped> &clamped,
                                 int i,
                                 size_t seq_len);

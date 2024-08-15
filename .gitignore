@@ -1,8 +1,7 @@
 .vscode
 harry.txt
 obj
-ml-latest-small
-
+ml-*
 *.o
 *.d
 *.pk2
