@@ -1,6 +1,8 @@
 .vscode
 harry.txt
 obj
+ml-*
 *.o
 *.d
 *.pk2
+*.zip

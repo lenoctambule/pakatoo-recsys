@@ -2,7 +2,7 @@
 
 # include <vector>
 # include <deque>
-# include <map>
+# include <unordered_map>
 # include <cstddef>
 # include <fstream>
 # include <sstream>
@@ -10,9 +10,8 @@
 
 # define FSIG "PK2\00"
 
-typedef std::map<size_t, std::vector<float>>   adj_t;
-typedef std::deque<adj_t>                       tensor_t;
-
+typedef std::unordered_map<size_t, std::vector<float>>   adj_t;
+typedef std::deque<adj_t>                                tensor_t;
 
 class Tensor
 {
@@ -35,6 +34,7 @@ class Tensor
         size_t                  getDepth();
 
         std::vector<float>      &get(size_t x, size_t y);
+        std::vector<float>      get_dup(size_t x, size_t y) const;
         std::vector<float>      &operator()(size_t x, size_t y);
         void                    save(std::string const &path);
         void                    load(std::string const &path);

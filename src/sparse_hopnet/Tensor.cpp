@@ -24,6 +24,16 @@ std::vector<float>     &Tensor::get(size_t x, size_t y)
     return (line->second);
 }
 
+std::vector<float>     Tensor::get_dup(size_t x, size_t y) const
+{
+    if (x >= _tensor.size())
+        return std::vector<float>(2, 0);
+    auto    line = _tensor[x].find(y);
+    if (line == _tensor[x].end())
+        return std::vector<float>(2, 0);
+    return (line->second);
+}
+
 std::vector<float>      &Tensor::operator()(size_t x, size_t y) {
     return get(x, y);
 }
