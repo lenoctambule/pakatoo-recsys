@@ -1,10 +1,10 @@
 #include "SparseHN.hpp"
 
-SparseHN::SparseHN() : _tensor(2)
+SparseHN::SparseHN() : _tensor(1)
 {
 }
 
-SparseHN::SparseHN(std::string const &path) : _tensor(2)
+SparseHN::SparseHN(std::string const &path) : _tensor(1)
 {
     load(path);
 }
@@ -35,7 +35,6 @@ void    SparseHN::train(std::vector<t_iclamped> &clamped)
             std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
             float              dx   = (i - j) / (float) seq_len;
             w[0]                    += clamped[i].val * clamped[j].val;
-            w[1]                    += clamp(1 / dx, 2);
         }
     }
 }
@@ -50,12 +49,13 @@ float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
     {
         if (i == j)
             continue;
-        std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
+        std::vector<float> w   = _tensor.get_dup(clamped[i].id, clamped[j].id);
         float              dx   = (i - j) / (float) seq_len;
-        E                       += w[0] * clamped[i].val * clamped[j].val;
-        E                       += w[1] * clamp(1/dx,1);
+        if (w[1] == 0)
+            continue;
+        E                       += (w[0] * clamped[i].val * clamped[j].val);
     }
-    return E;
+    return E / seq_len;
 }
 
 float   SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
@@ -78,7 +78,7 @@ float   SparseHN::eval(std::vector<t_iclamped> &clamped, size_t id)
     pre_E = seq_energy(seq);
     seq[seq.size()-1].val = -1;
     post_E = seq_energy(seq);
-    return tanh(pre_E - post_E);
+    return exp(post_E) / (exp(post_E) + exp(pre_E));
 }
 
 size_t  SparseHN::infer(std::vector<t_iclamped> &clamped)

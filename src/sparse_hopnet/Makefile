@@ -1,5 +1,5 @@
 CC		= c++
-FLAGS	= -g
+FLAGS	= 
 INCS	= -I./includes
 SRCS	= SparseHN.cpp Tensor.cpp utils.cpp movielens_test.cpp
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
@@ -13,7 +13,6 @@ all: $(NAME)
 $(OBJ_DIR)/%.o : %.cpp
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $(FLAGS) $(INCS) -o obj/$(<:.cpp=.o) -c $<
-
 
 $(NAME): $(OBJ)
 	$(CC) $(FLAGS) $(OBJ) -o $(NAME)
