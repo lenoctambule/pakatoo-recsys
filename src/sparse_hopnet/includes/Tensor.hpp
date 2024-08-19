@@ -30,8 +30,8 @@ class Tensor
         Tensor(size_t _depth);
         ~Tensor();
 
-        size_t                  size();
-        size_t                  getDepth();
+        size_t                  size() const;
+        size_t                  getDepth() const;
 
         std::vector<float>      &get(size_t x, size_t y);
         std::vector<float>      get_dup(size_t x, size_t y) const;

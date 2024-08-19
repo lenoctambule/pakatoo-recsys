@@ -16,8 +16,6 @@ int main()
     size_t                      uid;
     t_iclamped                  r;
     double                      error = 0;
-    size_t                      ecount = 0;
-
 
     while (std::getline(in, line))
     {
@@ -39,7 +37,7 @@ int main()
         hn.train(seq);
         seq.clear();
     }
-    hn.save("./test.pk2");
+    hn.save("./ml-100k.pk2");
     in.open("./ml-100k/u1.test");
     size_t  i = 1;
     clock_t start = clock();
@@ -52,10 +50,8 @@ int main()
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
         float eval = (1 - hn.eval(urating_seq[uid - 1], r.id)) * 5;
         error   += std::pow(eval - r.val, 2);
-        std::cout << eval << " " << r.val << std::endl;
         i++;
     }
-    std::cout << (ecount / (20000.0f)) * 100 << "% error" << std::endl;
     std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / 20000.0f << "ms" << std::endl;
     std::cout << "RMSE = " << std::sqrt(error / 20000.0f) << std::endl;
     in.close();

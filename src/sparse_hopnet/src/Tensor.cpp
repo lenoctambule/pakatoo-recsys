@@ -11,8 +11,8 @@ Tensor::~Tensor()
 {
 }
 
-size_t                  Tensor::size() { return _tensor.size(); }
-size_t                  Tensor::getDepth() { return _depth; }
+size_t                  Tensor::size() const { return _tensor.size(); }
+size_t                  Tensor::getDepth() const { return _depth; }
 
 std::vector<float>     &Tensor::get(size_t x, size_t y)
 {
