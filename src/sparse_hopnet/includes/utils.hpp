@@ -7,6 +7,5 @@
 
 # define SIGN(x) (x < 0 ? -1 : 1)
 
-float   logistic(float x);
 float   clamp(float x, float max);
-void    split(std::string &in, std::vector<std::string> &out, char const *sep);
+void    split(std::string in, std::vector<std::string> &out, char const *sep);

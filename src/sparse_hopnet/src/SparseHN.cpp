@@ -22,7 +22,7 @@ void    SparseHN::load(std::string const &path) {
     _tensor.load(path);
 }
 
-void    SparseHN::train(std::vector<t_iclamped> &clamped)
+void    SparseHN::train(std::vector<t_iclamped> const &clamped)
 {
     size_t seq_len = clamped.size();
 
@@ -69,7 +69,7 @@ float   SparseHN::seq_energy(std::vector<t_iclamped> &clamped)
     return E;
 }
 
-float   SparseHN::eval(std::vector<t_iclamped> &clamped, size_t id)
+float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
 {
     std::vector<t_iclamped> seq(clamped);
     float                   pre_E, post_E;
@@ -78,6 +78,10 @@ float   SparseHN::eval(std::vector<t_iclamped> &clamped, size_t id)
     pre_E = seq_energy(seq);
     seq[seq.size()-1].val = -1;
     post_E = seq_energy(seq);
+    if (id == 0)
+    {
+        std::cout << post_E - pre_E << std::endl;
+    }
     return exp(post_E) / (exp(post_E) + exp(pre_E));
 }
 
