@@ -1,18 +1,19 @@
 CC		= c++
-FLAGS	= 
+FLAGS	= -g
 INCS	= -I./includes
 SRCS	= SparseHN.cpp \
 			Tensor.cpp \
 			Interface.cpp \
-			utils.cpp 
+			utils.cpp \
+			Pakatoo.cpp
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
 SRC_DIR = ./src/
-NAME	= ml-100k_test
+NAME	= pakatoo-shell
 LIBNAME = sparse-hopnet-cpp.a
 DEPS	= $(OBJ:%.o=%.d)
 
-all: $(NAME)
+all: $(NAME) benchmark
 
 -include $(DEPS)
 $(OBJ): $(OBJ_DIR)/%.o : $(SRC_DIR)%.cpp
@@ -22,14 +23,17 @@ $(OBJ): $(OBJ_DIR)/%.o : $(SRC_DIR)%.cpp
 $(LIBNAME): $(OBJ)
 	ar rcs $(LIBNAME) $(OBJ)
 
-$(NAME): $(LIBNAME)
+$(NAME): $(LIBNAME) main.cpp
 	$(CC) $(FLAGS) $(INCS) main.cpp $(LIBNAME) -o $(NAME)
+
+benchmark: $(LIBNAME) tests/benchmark.cpp
+	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o benchmark
 
 clean :
 	rm -rf ./obj 
 
 fclean : clean
-	rm -f $(NAME) $(LIBNAME)
+	rm -f $(NAME) $(LIBNAME) benchmark
 
 re : fclean all
 
