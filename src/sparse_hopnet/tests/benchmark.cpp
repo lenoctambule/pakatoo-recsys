@@ -7,12 +7,13 @@ typedef struct s_user
     size_t zipcode;
 } t_user;
 
+const char g_loadchars[] = "⡿⣟⣯⣷⣾⣽⣻⢿";
+
 static void init_features(std::map<std::string, size_t> &features, char const *fname)
 {
     static size_t gid = 0;
 
     features[fname] = gid;
-    //std::cout << "Added feature " << fname << " with id " << gid << std::endl;
     gid++;
 }
 
@@ -151,15 +152,18 @@ int main()
 
     for (size_t i = 0; ft[i] != NULL; i++)
         init_features(features, ft[i]);
+    std::cout << "Extracting user features ..." << std::endl;
     extract_user_features(user_features, features);
+    std::cout << "Extracting movie features ..." << std::endl;
     extract_movie_features(movie_features, features);
+    std::cout << "Extracting user features ..." << std::endl;
     extract_user_ratings(user_ratings);
+    std::cout << "Training model ..." << std::endl;
     for (size_t i = 0; i < user_ratings.size(); i++)
     {
         build_ctx(injected_ctx, user_ratings, user_features, movie_features, i);
         recsys.train(user_ratings[i], injected_ctx);
     }
-
 
     std::ifstream               in("./ml-100k/u1.test");
     std::string                 line;
@@ -181,12 +185,12 @@ int main()
         features.insert(features.end(), user_features[uid].begin(), user_features[uid].end());
         features.insert(features.end(), movie_features[r.id].begin(), movie_features[r.id].end());
         features.push_back(t_iclamped{.id=0, .val=((r.val - 1) / 4) * 2 - 1});
-        float eval = (1 - recsys.eval(user_ratings[uid - 1], features, r.id)) * 5;
+        float eval = 1 + (1 - recsys.eval(user_ratings[uid - 1], features, r.id)) * 4;
         error   += std::pow(eval - r.val, 2);
-        //std::cout << eval << " " << r.val << std::endl;
-        //std::cout << ((float)i / 20000.0f) * 100 << "%" << std::endl;
+        std::cout<< u8"\033[2J\033[1;1H";
+        std::cout << g_loadchars[i%8] << " " << (i / 200.0f) << "% " << "RMSE = " << std::sqrt(error / i) << std::endl;
         i++;
     }
-    std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / 20000.0f << "ms" << std::endl;
-    std::cout << "RMSE = " << std::sqrt(error / 20000.0f) << std::endl;
+    std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / i << "ms" << std::endl;
+    std::cout << "RMSE = " << std::sqrt(error / i) << std::endl;
 }

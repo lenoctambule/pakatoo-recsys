@@ -22,6 +22,11 @@ void    SparseHN::load(std::string const &path) {
     _tensor.load(path);
 }
 
+static float vlr(float w, float x, float d)
+{
+    return std::exp(-std::abs(w) * d);
+}
+
 void    SparseHN::train(std::vector<t_iclamped> const &clamped)
 {
     size_t seq_len = clamped.size();
@@ -34,7 +39,7 @@ void    SparseHN::train(std::vector<t_iclamped> const &clamped)
                 continue ;
             std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
             float              dx   = (i - j) / (float) seq_len;
-            w[0]                    += std::exp(-std::abs(w[0])) * clamped[i].val * clamped[j].val;
+            w[0]                    +=  vlr(w[0], clamped[i].val * clamped[j].val, 5.0f) * clamped[i].val * clamped[j].val;
         }
     }
 }

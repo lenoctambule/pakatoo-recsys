@@ -19,5 +19,5 @@ float   Pakatoo::eval(std::vector<t_iclamped> const &seq, std::vector<t_iclamped
 
     p_seq = _seqhn.eval(seq, id);
     //p_ctx = _ctxhn.eval(ctx, 0);
-    return (p_ctx + p_seq) / 1;
+    return p_seq + p_ctx;
 }
