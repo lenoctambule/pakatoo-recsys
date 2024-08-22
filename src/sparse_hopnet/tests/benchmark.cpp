@@ -12,6 +12,8 @@ static void init_features(std::map<std::string, size_t> &features, char const *f
     static size_t gid = 0;
 
     features[fname] = gid;
+    //std::cout << "Added feature " << fname << " with id " << gid << std::endl;
+    gid++;
 }
 
 static void extract_user_ratings(std::vector<std::vector<t_iclamped>> &user_ratings)
@@ -37,11 +39,12 @@ static void extract_user_ratings(std::vector<std::vector<t_iclamped>> &user_rati
 static void extract_movie_features(std::vector<std::vector<t_iclamped>> &movie_features,
                                     std::map<std::string, size_t> &features)
 {
-    std::ifstream                       in;
-    std::string                         line;
-    std::vector<std::string>            s;
-    size_t                              fid;
-    size_t                              mid;
+    std::ifstream               in;
+    std::string                 line;
+    std::vector<std::string>    s;
+    size_t                      fid;
+    size_t                      mid;
+    std::stringstream           ss;
 
     in.open("./ml-100k/u.item");
     while(std::getline(in, line))
@@ -52,9 +55,10 @@ static void extract_movie_features(std::vector<std::vector<t_iclamped>> &movie_f
         {
             if (s[i][0] == '1')
             {
-                if (features.find(s[i]) == features.end())
-                    init_features(features, s[i].c_str());
-                movie_features[mid].push_back(t_iclamped{.id=features[s[i]], .val=1});
+                line = std::to_string(i - 5);
+                if (features.find(line) == features.end())
+                    init_features(features, line.c_str());
+                movie_features[mid].push_back(t_iclamped{.id=features[line], .val=1});
             }
         }
     }
@@ -87,13 +91,14 @@ static void extract_user_features(std::vector<std::vector<t_iclamped>> &user_fea
             case 22 ... 30:
                 fid = features["uyoung"];
                 break;
-            case 40 ... 55:
+            case 31 ... 55:
                 fid = features["umid"];
                 break;
             default :
-                fid = features["old"];
+                fid = features["uold"];
                 break;
         }
+
         user_features[user.id].push_back(t_iclamped{.id=fid, .val=1});
         if (s[2] == "M")
             user_features[user.id].push_back(t_iclamped{.id=features["M"], .val=1});
@@ -163,6 +168,7 @@ int main()
     t_iclamped                  r;
     double                      error;
     clock_t                     start;
+    size_t                      i = 0;
 
     start = clock();
     while (std::getline(in, line))
@@ -174,9 +180,12 @@ int main()
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
         features.insert(features.end(), user_features[uid].begin(), user_features[uid].end());
         features.insert(features.end(), movie_features[r.id].begin(), movie_features[r.id].end());
-        features.push_back(t_iclamped{.id=0, .val=r.val});
+        features.push_back(t_iclamped{.id=0, .val=((r.val - 1) / 4) * 2 - 1});
         float eval = (1 - recsys.eval(user_ratings[uid - 1], features, r.id)) * 5;
         error   += std::pow(eval - r.val, 2);
+        //std::cout << eval << " " << r.val << std::endl;
+        //std::cout << ((float)i / 20000.0f) * 100 << "%" << std::endl;
+        i++;
     }
     std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / 20000.0f << "ms" << std::endl;
     std::cout << "RMSE = " << std::sqrt(error / 20000.0f) << std::endl;

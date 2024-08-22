@@ -12,3 +12,8 @@ void    split(std::string in, std::vector<std::string> &out, char const *sep)
         out.push_back(item);
     }
 }
+
+float   clamp(float x, float max)
+{
+    return std::max(std::min(x, max), -1 * max);
+}

@@ -15,9 +15,9 @@ void    Pakatoo::train(std::vector<t_iclamped> const &seq, std::vector<std::vect
 
 float   Pakatoo::eval(std::vector<t_iclamped> const &seq, std::vector<t_iclamped> const &ctx, size_t id)
 {
-    float   p_ctx, p_seq;
+    float   p_ctx = 0, p_seq = 0;
 
-    p_ctx = _seqhn.eval(seq, id);
-    p_seq = _ctxhn.eval(ctx, 0);
-    return (p_ctx + p_seq) / 2;
+    p_seq = _seqhn.eval(seq, id);
+    //p_ctx = _ctxhn.eval(ctx, 0);
+    return (p_ctx + p_seq) / 1;
 }

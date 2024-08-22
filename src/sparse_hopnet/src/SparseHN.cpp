@@ -34,7 +34,7 @@ void    SparseHN::train(std::vector<t_iclamped> const &clamped)
                 continue ;
             std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
             float              dx   = (i - j) / (float) seq_len;
-            w[0]                    += clamped[i].val * clamped[j].val;
+            w[0]                    += std::exp(-std::abs(w[0])) * clamped[i].val * clamped[j].val;
         }
     }
 }
@@ -78,10 +78,6 @@ float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
     pre_E = seq_energy(seq);
     seq[seq.size()-1].val = -1;
     post_E = seq_energy(seq);
-    if (id == 0)
-    {
-        std::cout << post_E - pre_E << std::endl;
-    }
     return exp(post_E) / (exp(post_E) + exp(pre_E));
 }
 

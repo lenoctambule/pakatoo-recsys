@@ -9,11 +9,11 @@ SRCS	= SparseHN.cpp \
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
 SRC_DIR = ./src/
-NAME	= ml-100k_test
+NAME	= pakatoo-shell
 LIBNAME = sparse-hopnet-cpp.a
 DEPS	= $(OBJ:%.o=%.d)
 
-all: $(NAME)
+all: $(NAME) benchmark
 
 -include $(DEPS)
 $(OBJ): $(OBJ_DIR)/%.o : $(SRC_DIR)%.cpp
