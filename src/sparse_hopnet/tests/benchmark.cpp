@@ -1,4 +1,5 @@
 # include "Pakatoo.hpp"
+# include <iomanip>
 
 typedef struct s_user
 {
@@ -7,7 +8,7 @@ typedef struct s_user
     size_t zipcode;
 } t_user;
 
-const char g_loadchars[] = "⡿⣟⣯⣷⣾⣽⣻⢿";
+char g_loadloop[8][8] = {"⡿","⣟","⣯","⣷","⣾","⣽","⣻","⢿"};
 
 static void init_features(std::map<std::string, size_t> &features, char const *fname)
 {
@@ -158,11 +159,12 @@ int main()
     extract_movie_features(movie_features, features);
     std::cout << "Extracting user features ..." << std::endl;
     extract_user_ratings(user_ratings);
-    std::cout << "Training model ..." << std::endl;
     for (size_t i = 0; i < user_ratings.size(); i++)
     {
         build_ctx(injected_ctx, user_ratings, user_features, movie_features, i);
         recsys.train(user_ratings[i], injected_ctx);
+        std::cout << "[" << g_loadloop[i%8] << "] Training model ..." << std::endl;
+        std::cout << "\x1b[1A\x1b[2K";
     }
 
     std::ifstream               in("./ml-100k/u1.test");
@@ -174,6 +176,8 @@ int main()
     clock_t                     start;
     size_t                      i = 0;
 
+    std::cout << std::fixed;
+    std::cout << std::setprecision(2);
     start = clock();
     while (std::getline(in, line))
     {
@@ -187,8 +191,8 @@ int main()
         features.push_back(t_iclamped{.id=0, .val=((r.val - 1) / 4) * 2 - 1});
         float eval = 1 + (1 - recsys.eval(user_ratings[uid - 1], features, r.id)) * 4;
         error   += std::pow(eval - r.val, 2);
-        std::cout<< u8"\033[2J\033[1;1H";
-        std::cout << g_loadchars[i%8] << " " << (i / 200.0f) << "% " << "RMSE = " << std::sqrt(error / i) << std::endl;
+        std::cout << "[" << g_loadloop[i%8] << "] Running tests " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << std::endl;
+        std::cout << "\x1b[1A\x1b[2K";
         i++;
     }
     std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / i << "ms" << std::endl;
