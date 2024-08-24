@@ -37,8 +37,7 @@ void    SparseHN::train(std::vector<t_iclamped> const &clamped)
         {
             if (i == j)
                 continue ;
-            std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
-            float              dx   = (i - j) / (float) seq_len;
+            std::vector<float> &w   = _tensor.get_or_create(clamped[i].id, clamped[j].id);
             w[0]                    +=  vlr(w[0], clamped[i].val * clamped[j].val, 5.0f) * clamped[i].val * clamped[j].val;
         }
     }
@@ -54,11 +53,8 @@ float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
     {
         if (i == j)
             continue;
-        std::vector<float> w   = _tensor.get_dup(clamped[i].id, clamped[j].id);
-        float              dx   = (i - j) / (float) seq_len;
-        if (w[1] == 0)
-            continue;
-        E                       += (w[0] * clamped[i].val * clamped[j].val);
+        const std::vector<float> &w = _tensor.get(clamped[i].id, clamped[j].id);
+        E                           += (w[0] * clamped[i].val * clamped[j].val);
     }
     return E / seq_len;
 }

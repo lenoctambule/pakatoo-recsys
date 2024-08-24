@@ -177,7 +177,7 @@ int main()
     size_t                      i = 0;
 
     std::cout << std::fixed;
-    std::cout << std::setprecision(2);
+    std::cout << std::setprecision(3);
     start = clock();
     while (std::getline(in, line))
     {
