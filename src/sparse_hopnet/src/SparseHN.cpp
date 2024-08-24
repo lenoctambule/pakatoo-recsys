@@ -39,8 +39,8 @@ void    SparseHN::batch_train(std::vector<t_iclamped> const &clamped)
 {
     size_t seq_len  = clamped.size();
 
-    for (int i = 0; i < seq_len; i++)
-        for (int j = i + 1; j < seq_len; j++)
+    for (size_t i = 0; i < seq_len; i++)
+        for (size_t j = i + 1; j < seq_len; j++)
             update_interaction(clamped[i], clamped[j]);
 }
 
@@ -72,11 +72,10 @@ float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
 
     for (int j = 0; j < seq_len; j++)
     {
-        size_t x        = std::min(clamped[i].id, clamped[j].id);
-        size_t y        = std::max(clamped[i].id, clamped[j].id);
-
         if (i == j)
             continue;
+        size_t x        = std::min(clamped[i].id, clamped[j].id);
+        size_t y        = std::max(clamped[i].id, clamped[j].id);
         const std::vector<float> &w = _tensor.get(x, y);
         E                           += (w[0] * clamped[i].val * clamped[j].val);
     }
