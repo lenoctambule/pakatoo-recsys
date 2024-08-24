@@ -2,6 +2,9 @@
 harry.txt
 obj
 ml-*
+benchmark
+pakatoo-shell
+*.a
 *.o
 *.d
 *.pk2

@@ -16,29 +16,42 @@ typedef struct s_iclamped
     float       val;
 } t_iclamped;
 
+typedef std::deque<t_iclamped>              t_stream;
+typedef std::deque<std::deque<t_iclamped>>  t_streams;
+
 class SparseHN
 {
     private :
-        Tensor                          _tensor;
+        Tensor      _tensor;
+        t_streams   _streams;
+        size_t      _sc;
 
         SparseHN(SparseHN const &a);
         SparseHN    &operator=(SparseHN const &a);
+
+        void        update_interaction(t_iclamped const &a, t_iclamped const &b);
 
     public :
         SparseHN();
         SparseHN(std::string const &path);
         ~SparseHN();
 
-        /* Load or save a model */
         void    save(std::string const &path);
         void    load(std::string const &path);
-        /* Train using either series of clamped nodes or item-item similarity */
-        void    train(std::vector<t_iclamped> const &clamped);
-        size_t  infer(std::vector<t_iclamped> &clamped);
-        float   eval(std::vector<t_iclamped>  const &clamped, size_t id);
+
+        // Train from historical data
+        void    batch_train(std::vector<t_iclamped> const &clamped);
+
+        // Stream user interactions for online training
+        size_t  stream_create();
+        void    stream_train(size_t sid, t_iclamped &n);
+        void    stream_clear();
+
+        // Inference
         float   token_energy(std::vector<t_iclamped> &clamped,
                                 int i,
                                 size_t seq_len);
-        /* Infer next likeliest <out_size> items from a series of user interactions */
         float   seq_energy(std::vector<t_iclamped> &clamped);
+        float   eval(std::vector<t_iclamped>  const &clamped, size_t id);
+        size_t  infer(std::vector<t_iclamped> &clamped);
 };

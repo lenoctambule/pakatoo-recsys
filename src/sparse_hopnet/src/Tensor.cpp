@@ -3,7 +3,8 @@
 #include <iostream>
 
 Tensor::Tensor(size_t depth) : _depth(depth),
-                                _tensor()
+                                _tensor(),
+                                _default(depth, 0)
 {
 }
 
@@ -14,7 +15,7 @@ Tensor::~Tensor()
 size_t                  Tensor::size() const { return _tensor.size(); }
 size_t                  Tensor::getDepth() const { return _depth; }
 
-std::vector<float>     &Tensor::get(size_t x, size_t y)
+std::vector<float>          &Tensor::get_or_create(size_t x, size_t y)
 {
     if (x >= _tensor.size())
         _tensor.resize(x + 1);
@@ -24,18 +25,19 @@ std::vector<float>     &Tensor::get(size_t x, size_t y)
     return (line->second);
 }
 
-std::vector<float>     Tensor::get_dup(size_t x, size_t y) const
+const std::vector<float>    &Tensor::get(size_t x, size_t y) const
 {
     if (x >= _tensor.size())
-        return std::vector<float>(2, 0);
+        return _default;
     auto    line = _tensor[x].find(y);
     if (line == _tensor[x].end())
-        return std::vector<float>(2, 0);
+        return _default;
     return (line->second);
 }
 
+
 std::vector<float>      &Tensor::operator()(size_t x, size_t y) {
-    return get(x, y);
+    return get_or_create(x, y);
 }
 
 void                    Tensor::save_adj(std::string const &path, std::ofstream &out, size_t idx)

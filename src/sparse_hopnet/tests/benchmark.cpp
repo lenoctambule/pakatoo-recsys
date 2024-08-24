@@ -18,13 +18,14 @@ static void init_features(std::map<std::string, size_t> &features, char const *f
     gid++;
 }
 
-static void extract_user_ratings(std::vector<std::vector<t_iclamped>> &user_ratings)
+static void train_model(Pakatoo &recsys)
 {
     std::ifstream                       in;
     std::string                         line;
     t_iclamped                          r;
     std::vector<std::string>            s;
     size_t                              uid;
+    size_t                              i = 0;
 
     in.open("./ml-100k/u1.base");
     while (std::getline(in, line))
@@ -34,7 +35,10 @@ static void extract_user_ratings(std::vector<std::vector<t_iclamped>> &user_rati
         r.val   = std::strtof(s[2].c_str(), NULL);
         r.val   = ((r.val - 1) / 4) * 2 - 1;
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
-        user_ratings[uid - 1].push_back(r);
+        recsys.train_stream(uid, r);
+        std::cout << "[" << g_loadloop[i%8] << "] Training model ... " << std::endl;
+        std::cout << "\x1b[1A\x1b[2K";
+        i++;
     }
 }
 
@@ -153,20 +157,7 @@ int main()
 
     for (size_t i = 0; ft[i] != NULL; i++)
         init_features(features, ft[i]);
-    std::cout << "Extracting user features ..." << std::endl;
-    extract_user_features(user_features, features);
-    std::cout << "Extracting movie features ..." << std::endl;
-    extract_movie_features(movie_features, features);
-    std::cout << "Extracting user features ..." << std::endl;
-    extract_user_ratings(user_ratings);
-    for (size_t i = 0; i < user_ratings.size(); i++)
-    {
-        build_ctx(injected_ctx, user_ratings, user_features, movie_features, i);
-        recsys.train(user_ratings[i], injected_ctx);
-        std::cout << "[" << g_loadloop[i%8] << "] Training model ..." << std::endl;
-        std::cout << "\x1b[1A\x1b[2K";
-    }
-
+    train_model(recsys);
     std::ifstream               in("./ml-100k/u1.test");
     std::string                 line;
     std::vector<std::string>    s;
@@ -177,7 +168,7 @@ int main()
     size_t                      i = 0;
 
     std::cout << std::fixed;
-    std::cout << std::setprecision(2);
+    std::cout << std::setprecision(3);
     start = clock();
     while (std::getline(in, line))
     {
@@ -186,13 +177,12 @@ int main()
         r.id    = std::strtoul(s[1].c_str(), NULL, 10) - 1;
         r.val   = std::strtof(s[2].c_str(), NULL);
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
-        features.insert(features.end(), user_features[uid].begin(), user_features[uid].end());
-        features.insert(features.end(), movie_features[r.id].begin(), movie_features[r.id].end());
-        features.push_back(t_iclamped{.id=0, .val=((r.val - 1) / 4) * 2 - 1});
-        float eval = 1 + (1 - recsys.eval(user_ratings[uid - 1], features, r.id)) * 4;
+        float eval = 1 + (1 - recsys.eval(uid, r.id)) * 4;
         error   += std::pow(eval - r.val, 2);
-        std::cout << "[" << g_loadloop[i%8] << "] Running tests " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << std::endl;
+        std::cout << "[" << g_loadloop[i%8] << "] Running tests ... " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << " " << eval << std::endl;
         std::cout << "\x1b[1A\x1b[2K";
+        r.val = ((r.val - 1) / 4) * 2 - 1;
+        recsys.train_stream(uid, r);
         i++;
     }
     std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / i << "ms" << std::endl;

@@ -16,8 +16,9 @@ typedef std::deque<adj_t>                                tensor_t;
 class Tensor
 {
     private :
-        tensor_t    _tensor;
-        size_t      _depth;
+        tensor_t            _tensor;
+        std::vector<float>  _default;
+        size_t              _depth;
 
         Tensor();
         Tensor(Tensor const &a);
@@ -33,9 +34,9 @@ class Tensor
         size_t                  size() const;
         size_t                  getDepth() const;
 
-        std::vector<float>      &get(size_t x, size_t y);
-        std::vector<float>      get_dup(size_t x, size_t y) const;
-        std::vector<float>      &operator()(size_t x, size_t y);
-        void                    save(std::string const &path);
-        void                    load(std::string const &path);
+        std::vector<float>          &get_or_create(size_t x, size_t y);
+        const std::vector<float>    &get(size_t x, size_t y) const;
+        std::vector<float>          &operator()(size_t x, size_t y);
+        void                        save(std::string const &path);
+        void                        load(std::string const &path);
 };

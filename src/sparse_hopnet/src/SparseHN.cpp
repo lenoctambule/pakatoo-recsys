@@ -1,10 +1,10 @@
 #include "SparseHN.hpp"
 
-SparseHN::SparseHN() : _tensor(1)
+SparseHN::SparseHN() : _tensor(1), _sc(0)
 {
 }
 
-SparseHN::SparseHN(std::string const &path) : _tensor(1)
+SparseHN::SparseHN(std::string const &path) : _tensor(1), _sc(0)
 {
     load(path);
 }
@@ -17,7 +17,6 @@ void    SparseHN::save(std::string const &path) {
     _tensor.save(path);
 }
 
-
 void    SparseHN::load(std::string const &path) {
     _tensor.load(path);
 }
@@ -27,21 +26,42 @@ static float vlr(float w, float x, float d)
     return std::exp(-std::abs(w) * d);
 }
 
-void    SparseHN::train(std::vector<t_iclamped> const &clamped)
+void        SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
 {
-    size_t seq_len = clamped.size();
+    size_t x        = std::min(a.id, b.id);
+    size_t y        = std::max(a.id, b.id);
 
-    for (int i = 0; i < seq_len; i++)
-    {
-        for (int j = 0; j < seq_len; j++)
-        {
-            if (i == j)
-                continue ;
-            std::vector<float> &w   = _tensor.get(clamped[i].id, clamped[j].id);
-            float              dx   = (i - j) / (float) seq_len;
-            w[0]                    +=  vlr(w[0], clamped[i].val * clamped[j].val, 5.0f) * clamped[i].val * clamped[j].val;
-        }
-    }
+    std::vector<float> &w   = _tensor.get_or_create(x, y);
+    w[0]                    +=  vlr(w[0], a.val * b.val, 5.0f) * a.val * b.val;
+}
+
+void    SparseHN::batch_train(std::vector<t_iclamped> const &clamped)
+{
+    size_t seq_len  = clamped.size();
+
+    for (size_t i = 0; i < seq_len; i++)
+        for (size_t j = i + 1; j < seq_len; j++)
+            update_interaction(clamped[i], clamped[j]);
+}
+
+size_t  SparseHN::stream_create()
+{
+    _streams.resize(_streams.size() + 1);
+    return _sc++;
+}
+
+void    SparseHN::stream_train(size_t sid, t_iclamped &n)
+{
+    if (sid >= _streams.size())
+        throw std::out_of_range("Invalid stream id.");
+    t_stream &s = _streams[sid];
+    for (auto ite = s.begin(); ite != s.end(); ite++)
+        update_interaction(n, *ite);
+    s.push_back(n);
+}
+
+void    SparseHN::stream_clear() {
+    _streams.clear();
 }
 
 float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
@@ -54,11 +74,10 @@ float   SparseHN::token_energy(std::vector<t_iclamped> &clamped,
     {
         if (i == j)
             continue;
-        std::vector<float> w   = _tensor.get_dup(clamped[i].id, clamped[j].id);
-        float              dx   = (i - j) / (float) seq_len;
-        if (w[1] == 0)
-            continue;
-        E                       += (w[0] * clamped[i].val * clamped[j].val);
+        size_t x        = std::min(clamped[i].id, clamped[j].id);
+        size_t y        = std::max(clamped[i].id, clamped[j].id);
+        const std::vector<float> &w = _tensor.get(x, y);
+        E                           += (w[0] * clamped[i].val * clamped[j].val);
     }
     return E / seq_len;
 }
