@@ -2,6 +2,15 @@
 
 #include <sstream>
 
+char g_loadloop[8][8] = {"⡿","⣟","⣯","⣷","⣾","⣽","⣻","⢿"};
+
+
+char    *loading_loop()
+{
+    static size_t i = 0;
+    return g_loadloop[(i++) % 8];
+}
+
 void    split(std::string in, std::vector<std::string> &out, char const *sep)
 {
     std::stringstream ss (in);

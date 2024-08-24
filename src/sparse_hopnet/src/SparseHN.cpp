@@ -32,7 +32,7 @@ void        SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &
     size_t y        = std::max(a.id, b.id);
 
     std::vector<float> &w   = _tensor.get_or_create(x, y);
-    w[0]                    +=  vlr(w[0], a.val * b.val, 5.0f) * a.val * b.val;
+    w[0]                    += vlr(w[0], a.val * b.val, 5.0f) * a.val * b.val;
 }
 
 void    SparseHN::batch_train(std::vector<t_iclamped> const &clamped)

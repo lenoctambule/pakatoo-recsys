@@ -8,8 +8,6 @@ typedef struct s_user
     size_t zipcode;
 } t_user;
 
-char g_loadloop[8][8] = {"⡿","⣟","⣯","⣷","⣾","⣽","⣻","⢿"};
-
 static void init_features(std::map<std::string, size_t> &features, char const *fname)
 {
     static size_t gid = 0;
@@ -36,9 +34,8 @@ static void train_model(Pakatoo &recsys)
         r.val   = ((r.val - 1) / 4) * 2 - 1;
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
         recsys.train_stream(uid, r);
-        std::cout << "[" << g_loadloop[i%8] << "] Training model ... " << std::endl;
+        std::cout << "[" <<  loading_loop() << "] Training model ... " << std::endl;
         std::cout << "\x1b[1A\x1b[2K";
-        i++;
     }
 }
 
@@ -179,7 +176,7 @@ int main()
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
         float eval = 1 + (1 - recsys.eval(uid, r.id)) * 4;
         error   += std::pow(eval - r.val, 2);
-        std::cout << "[" << g_loadloop[i%8] << "] Running tests ... " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << " " << eval << std::endl;
+        std::cout << "[" << loading_loop() << "] Running tests ... " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << " " << eval << std::endl;
         std::cout << "\x1b[1A\x1b[2K";
         r.val = ((r.val - 1) / 4) * 2 - 1;
         recsys.train_stream(uid, r);
