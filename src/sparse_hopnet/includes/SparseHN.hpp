@@ -16,7 +16,8 @@ typedef struct s_iclamped
     float       val;
 } t_iclamped;
 
-typedef std::deque<std::deque<t_iclamped>> t_streams;
+typedef std::deque<t_iclamped>              t_stream;
+typedef std::deque<std::deque<t_iclamped>>  t_streams;
 
 class SparseHN
 {

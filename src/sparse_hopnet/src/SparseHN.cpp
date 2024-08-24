@@ -52,10 +52,12 @@ size_t  SparseHN::stream_create()
 
 void    SparseHN::stream_train(size_t sid, t_iclamped &n)
 {
-    if (sid > _streams.size())
+    if (sid >= _streams.size())
         throw std::out_of_range("Invalid stream id.");
-    for (size_t i = 0; i < _streams[sid].size(); i++)
-        update_interaction(n, _streams[sid][i]);
+    t_stream &s = _streams[sid];
+    for (auto ite = s.begin(); ite != s.end(); ite++)
+        update_interaction(n, *ite);
+    s.push_back(n);
 }
 
 void    SparseHN::stream_clear() {
