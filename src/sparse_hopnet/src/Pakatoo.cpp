@@ -8,9 +8,9 @@ Pakatoo::~Pakatoo()
 
 void    Pakatoo::train(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
 {
-    _seqhn.train(seq);
+    _seqhn.batch_train(seq);
     for (size_t i = 0; i < ctx.size(); i++)
-        _ctxhn.train(ctx[i]);
+        _ctxhn.batch_train(ctx[i]);
 }
 
 float   Pakatoo::eval(std::vector<t_iclamped> const &seq, std::vector<t_iclamped> const &ctx, size_t id)
