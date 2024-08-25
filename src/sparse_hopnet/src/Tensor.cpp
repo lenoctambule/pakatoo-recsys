@@ -2,9 +2,11 @@
 #include <vector>
 #include <iostream>
 
-Tensor::Tensor(size_t depth) : _depth(depth),
+Tensor::Tensor(size_t depth, bool is_symmetric) :
+                                _depth(depth),
                                 _tensor(),
-                                _default(depth, 0)
+                                _default(depth, 0),
+                                _is_symmetric(is_symmetric)
 {
 }
 
@@ -15,8 +17,19 @@ Tensor::~Tensor()
 size_t                  Tensor::size() const { return _tensor.size(); }
 size_t                  Tensor::getDepth() const { return _depth; }
 
+static void                 sort_coordinates(size_t &x, size_t &y)
+{
+    size_t  tmp;
+
+    tmp      = x;
+    x        = std::min(x, y);
+    y        = std::max(tmp, y);
+}
+
 std::vector<float>          &Tensor::get_or_create(size_t x, size_t y)
 {
+    if (_is_symmetric)
+        sort_coordinates(x, y);
     if (x >= _tensor.size())
         _tensor.resize(x + 1);
     auto    line = _tensor[x].find(y);
@@ -27,6 +40,8 @@ std::vector<float>          &Tensor::get_or_create(size_t x, size_t y)
 
 const std::vector<float>    &Tensor::get(size_t x, size_t y) const
 {
+    if (_is_symmetric)
+        sort_coordinates(x, y);
     if (x >= _tensor.size())
         return _default;
     auto    line = _tensor[x].find(y);

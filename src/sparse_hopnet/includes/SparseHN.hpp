@@ -48,10 +48,10 @@ class SparseHN
         void    stream_clear();
 
         // Inference
-        float   token_energy(std::vector<t_iclamped> &clamped,
+        float   token_energy(std::vector<t_iclamped> const &clamped,
                                 int i,
                                 size_t seq_len);
-        float   seq_energy(std::vector<t_iclamped> &clamped);
+        float   seq_energy(std::vector<t_iclamped> const &clamped);
         float   eval(std::vector<t_iclamped>  const &clamped, size_t id);
         size_t  infer(std::vector<t_iclamped> &clamped);
 };
