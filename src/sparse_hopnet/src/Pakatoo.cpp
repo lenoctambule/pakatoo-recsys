@@ -31,11 +31,13 @@ void    Pakatoo::train_stream(size_t uid, t_iclamped &clamped)
 void    Pakatoo::train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
 {
     _seqhn.batch_train(seq);
-    for (size_t i = 0; i < ctx.size(); i++)
-        _ctxhn.batch_train(ctx[i]);
 }
 
 float   Pakatoo::eval(size_t uid, size_t id)
 {
     return _seqhn.eval(_uid_to_sid[uid].ratings, id);
+}
+
+void    Pakatoo::save(std::string const &path) {
+    _seqhn.save(path);
 }

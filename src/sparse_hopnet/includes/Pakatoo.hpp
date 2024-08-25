@@ -11,9 +11,8 @@ typedef struct s_utrack
 class   Pakatoo
 {
     private :
-        SparseHN                            _ctxhn;
-        SparseHN                            _seqhn;
-        std::unordered_map<size_t, t_utrack>  _uid_to_sid;
+        SparseHN                                _seqhn;
+        std::unordered_map<size_t, t_utrack>    _uid_to_sid;
 
         Pakatoo(Pakatoo const &a);
         Pakatoo &operator=(Pakatoo const &a);
@@ -25,4 +24,6 @@ class   Pakatoo
         void    train_stream(size_t uid, t_iclamped &clamped);
         void    train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx);
         float   eval(size_t uid, size_t id);
+
+        void    save(std::string const &path);
 };
