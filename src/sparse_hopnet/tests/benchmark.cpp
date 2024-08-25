@@ -35,7 +35,7 @@ static void train_model(Pakatoo &recsys)
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
         recsys.train_stream(uid, r);
         std::cout << "[" <<  loading_loop() << "] Training model ... " << std::endl;
-        std::cout << "\x1b[1A\x1b[2K";
+        std::cout << LINE_ERASE;
     }
 }
 
@@ -177,7 +177,7 @@ int main()
         float eval = 1 + (1 - recsys.eval(uid, r.id)) * 4;
         error   += std::pow(eval - r.val, 2);
         std::cout << "[" << loading_loop() << "] Running tests ... " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << " " << eval << std::endl;
-        std::cout << "\x1b[1A\x1b[2K";
+        std::cout << LINE_ERASE;
         r.val = ((r.val - 1) / 4) * 2 - 1;
         recsys.train_stream(uid, r);
         i++;

@@ -19,6 +19,7 @@ class Tensor
         tensor_t            _tensor;
         std::vector<float>  _default;
         size_t              _depth;
+        bool                _is_symmetric;
 
         Tensor();
         Tensor(Tensor const &a);
@@ -28,7 +29,7 @@ class Tensor
         void    load_adj(std::ifstream &in);
 
     public :
-        Tensor(size_t _depth);
+        Tensor(size_t _depth, bool is_symmetric);
         ~Tensor();
 
         size_t                  size() const;
