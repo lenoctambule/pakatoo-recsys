@@ -6,7 +6,9 @@ Tensor::Tensor(size_t depth, bool is_symmetric) :
                                 _depth(depth),
                                 _tensor(),
                                 _default(depth, 0),
-                                _is_symmetric(is_symmetric)
+                                _is_symmetric(is_symmetric),
+                                _ec(0),
+                                _emax(0)
 {
 }
 
@@ -16,6 +18,9 @@ Tensor::~Tensor()
 
 size_t                  Tensor::size() const { return _tensor.size(); }
 size_t                  Tensor::getDepth() const { return _depth; }
+double                  Tensor::getSparsity() const {
+    return ((double)_ec * 2) / ((_emax + 1) * (_emax + 1)) ;
+}
 
 static void                 sort_coordinates(size_t &x, size_t &y)
 {
@@ -30,11 +35,12 @@ std::vector<float>          &Tensor::get_or_create(size_t x, size_t y)
 {
     if (_is_symmetric)
         sort_coordinates(x, y);
+    _emax = _emax < x ? x : (_emax < y ? y : _emax);
     if (x >= _tensor.size())
         _tensor.resize(x + 1);
     auto    line = _tensor[x].find(y);
     if (line == _tensor[x].end())
-        return (_tensor[x][y] = std::vector<float>(_depth, 0.0));
+        return _ec++, (_tensor[x][y] = std::vector<float>(_depth, 0.0));
     return (line->second);
 }
 
@@ -49,7 +55,6 @@ const std::vector<float>    &Tensor::get(size_t x, size_t y) const
         return _default;
     return (line->second);
 }
-
 
 std::vector<float>      &Tensor::operator()(size_t x, size_t y) {
     return get_or_create(x, y);

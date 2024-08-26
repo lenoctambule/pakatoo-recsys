@@ -19,6 +19,8 @@ class Tensor
         tensor_t            _tensor;
         std::vector<float>  _default;
         size_t              _depth;
+        size_t              _ec;
+        size_t              _emax;
         bool                _is_symmetric;
 
         Tensor();
@@ -34,6 +36,7 @@ class Tensor
 
         size_t                  size() const;
         size_t                  getDepth() const;
+        double                  getSparsity() const;
 
         std::vector<float>          &get_or_create(size_t x, size_t y);
         const std::vector<float>    &get(size_t x, size_t y) const;

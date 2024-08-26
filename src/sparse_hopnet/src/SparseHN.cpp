@@ -1,10 +1,10 @@
 #include "SparseHN.hpp"
 
-SparseHN::SparseHN() : _tensor(1, true), _sc(0)
+SparseHN::SparseHN() : tensor(1, true), _sc(0)
 {
 }
 
-SparseHN::SparseHN(std::string const &path) : _tensor(1, true), _sc(0)
+SparseHN::SparseHN(std::string const &path) : tensor(1, true), _sc(0)
 {
     load(path);
 }
@@ -14,11 +14,11 @@ SparseHN::~SparseHN()
 }
 
 void    SparseHN::save(std::string const &path) {
-    _tensor.save(path);
+    tensor.save(path);
 }
 
 void    SparseHN::load(std::string const &path) {
-    _tensor.load(path);
+    tensor.load(path);
 }
 
 static float vlr(float w, float x, float d)
@@ -28,7 +28,7 @@ static float vlr(float w, float x, float d)
 
 void        SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
 {
-    std::vector<float> &w   = _tensor.get_or_create(a.id, b.id);
+    std::vector<float> &w   = tensor.get_or_create(a.id, b.id);
     w[0]                    += vlr(w[0], a.val * b.val, 5.0f) * a.val * b.val;
 }
 
@@ -71,7 +71,7 @@ float   SparseHN::token_energy(std::vector<t_iclamped> const &clamped,
     {
         if (i == j)
             continue;
-        const std::vector<float> &w = _tensor.get(clamped[i].id, clamped[j].id);
+        const std::vector<float> &w = tensor.get(clamped[i].id, clamped[j].id);
         E                           += (w[0] * clamped[i].val * clamped[j].val);
     }
     return E;
@@ -95,7 +95,7 @@ float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
     E = seq_energy(clamped) * clamped.size();
     for (size_t i = 0; i < clamped.size(); i++)
     {
-        const std::vector<float> &w = _tensor.get(clamped[i].id, id);
+        const std::vector<float> &w = tensor.get(clamped[i].id, id);
         d_E                         += w[0] * clamped[i].val;
     }
     pre_E = (E + 2 * d_E) / (clamped.size() + 1);
@@ -111,7 +111,7 @@ size_t  SparseHN::infer(std::vector<t_iclamped> &clamped)
     std::vector<t_iclamped> seq(clamped);
 
     seq.push_back(t_iclamped{.id=0, .val=1});
-    for (size_t id = 0; id < _tensor.size(); id++)
+    for (size_t id = 0; id < tensor.size(); id++)
     {
         seq[seq.size()-1].id = id;
         E = seq_energy(seq);

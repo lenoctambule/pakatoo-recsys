@@ -22,7 +22,6 @@ typedef std::deque<std::deque<t_iclamped>>  t_streams;
 class SparseHN
 {
     private :
-        Tensor      _tensor;
         t_streams   _streams;
         size_t      _sc;
 
@@ -32,6 +31,8 @@ class SparseHN
         void        update_interaction(t_iclamped const &a, t_iclamped const &b);
 
     public :
+        Tensor      tensor;
+
         SparseHN();
         SparseHN(std::string const &path);
         ~SparseHN();

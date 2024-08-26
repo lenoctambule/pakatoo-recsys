@@ -184,5 +184,6 @@ int main()
     }
     std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / i << "ms" << std::endl;
     std::cout << "RMSE = " << std::sqrt(error / i) << std::endl;
+    std::cout << "Sparsity =" << recsys.graph.tensor.getSparsity() << std::endl;
     recsys.save("./out.pk2");
 }

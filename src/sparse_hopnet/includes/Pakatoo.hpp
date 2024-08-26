@@ -11,13 +11,14 @@ typedef struct s_utrack
 class   Pakatoo
 {
     private :
-        SparseHN                                _seqhn;
         std::unordered_map<size_t, t_utrack>    _uid_to_sid;
 
         Pakatoo(Pakatoo const &a);
         Pakatoo &operator=(Pakatoo const &a);
 
     public :
+        SparseHN                                graph;
+
         Pakatoo();
         ~Pakatoo();
 

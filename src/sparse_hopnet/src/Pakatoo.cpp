@@ -14,30 +14,30 @@ void    Pakatoo::train_stream(size_t uid, t_iclamped &clamped)
     auto ite = _uid_to_sid.find(uid);
     if (ite == _uid_to_sid.end())
     {
-        sid = _seqhn.stream_create();
+        sid = graph.stream_create();
         ut = &_uid_to_sid[uid];
         ut->sid = sid;
-        _seqhn.stream_train(sid, clamped);
+        graph.stream_train(sid, clamped);
         
     }
     else
     {
         ut = &ite->second;
-        _seqhn.stream_train(ut->sid, clamped);
+        graph.stream_train(ut->sid, clamped);
     }
     ut->ratings.push_back(clamped);
 }
 
 void    Pakatoo::train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
 {
-    _seqhn.batch_train(seq);
+    graph.batch_train(seq);
 }
 
 float   Pakatoo::eval(size_t uid, size_t id)
 {
-    return _seqhn.eval(_uid_to_sid[uid].ratings, id);
+    return graph.eval(_uid_to_sid[uid].ratings, id);
 }
 
 void    Pakatoo::save(std::string const &path) {
-    _seqhn.save(path);
+    graph.save(path);
 }
