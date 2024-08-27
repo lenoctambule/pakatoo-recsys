@@ -10,5 +10,5 @@ Interface::~Interface()
 
 void    Interface::handle_request(std::string const &str)
 {
-
+	(void) str;
 }

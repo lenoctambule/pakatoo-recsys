@@ -30,6 +30,7 @@ void    Pakatoo::train_stream(size_t uid, t_iclamped &clamped)
 
 void    Pakatoo::train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
 {
+	(void) ctx;
     graph.batch_train(seq);
 }
 

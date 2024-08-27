@@ -9,3 +9,5 @@ pakatoo-shell
 *.d
 *.pk2
 *.zip
+peda-session-*
+.gdb_history

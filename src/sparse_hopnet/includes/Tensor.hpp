@@ -27,7 +27,7 @@ class Tensor
         Tensor(Tensor const &a);
         Tensor  &operator=(Tensor const &a);
 
-        void    save_adj(std::string const &path, std::ofstream &out, size_t idx);
+        void    save_adj(std::ofstream &out, size_t idx);
         void    load_adj(std::ifstream &in);
 
     public :

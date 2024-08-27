@@ -3,12 +3,12 @@
 #include <iostream>
 
 Tensor::Tensor(size_t depth, bool is_symmetric) :
-                                _depth(depth),
                                 _tensor(),
                                 _default(depth, 0),
-                                _is_symmetric(is_symmetric),
+                                _depth(depth),
                                 _ec(0),
-                                _emax(0)
+                                _emax(0),
+                                _is_symmetric(is_symmetric)
 {
 }
 
@@ -60,7 +60,7 @@ std::vector<float>      &Tensor::operator()(size_t x, size_t y) {
     return get_or_create(x, y);
 }
 
-void                    Tensor::save_adj(std::string const &path, std::ofstream &out, size_t idx)
+void                    Tensor::save_adj(std::ofstream &out, size_t idx)
 {
     size_t  len = _tensor[idx].size();
 
@@ -88,7 +88,7 @@ void                    Tensor::save(std::string const &path)
     n_tokens = _tensor.size();
     out.write(reinterpret_cast<const char *>(&n_tokens), std::streamsize(sizeof(size_t)));
     for (size_t i = 0; i < _tensor.size(); i++)
-        save_adj(filename.str(), out, i);
+        save_adj(out, i);
 }
 
 void                Tensor::load_adj(std::ifstream &in)

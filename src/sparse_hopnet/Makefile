@@ -1,5 +1,5 @@
 CC		= c++
-FLAGS	= -g
+FLAGS	= -g -ffast-math -Wall -Werror -Wextra
 INCS	= -I./includes
 SRCS	= SparseHN.cpp \
 			Tensor.cpp \
