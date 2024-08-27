@@ -26,7 +26,7 @@ static float vlr(float w, float d)
     return std::exp(-std::abs(w) * d);
 }
 
-void        SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
+void    SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
 {
     std::vector<float> &w   = tensor.get_or_create(a.id, b.id);
     w[0]                    += vlr(w[0], 5.0f) * a.val * b.val;
@@ -83,7 +83,7 @@ float   SparseHN::seq_energy(std::vector<t_iclamped> const &clamped)
     float   E = 0;
 
     for (size_t i = 0; i < seq_len; i++)
-        E += token_energy(clamped, i, seq_len); 
+        E += token_energy(clamped, i, seq_len);
     return E / seq_len;
 }
 
