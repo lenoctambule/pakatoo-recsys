@@ -3,17 +3,15 @@ FLAGS	= -g -ffast-math -Wall -Werror -Wextra
 INCS	= -I./includes
 SRCS	= SparseHN.cpp \
 			Tensor.cpp \
-			Interface.cpp \
 			utils.cpp \
 			Pakatoo.cpp
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
 SRC_DIR = ./src/
-NAME	= pakatoo-shell
-LIBNAME = sparse-hopnet-cpp.a
+LIBNAME = pakatoo-core.a
 DEPS	= $(OBJ:%.o=%.d)
 
-all: $(NAME) benchmark
+all: $(LIBNAME) benchmark
 
 -include $(DEPS)
 $(OBJ): $(OBJ_DIR)/%.o : $(SRC_DIR)%.cpp
@@ -23,17 +21,18 @@ $(OBJ): $(OBJ_DIR)/%.o : $(SRC_DIR)%.cpp
 $(LIBNAME): $(OBJ)
 	ar rcs $(LIBNAME) $(OBJ)
 
-$(NAME): $(LIBNAME) main.cpp
-	$(CC) $(FLAGS) $(INCS) main.cpp $(LIBNAME) -o $(NAME)
+ml-100k:
+	wget https://files.grouplens.org/datasets/movielens/ml-100k.zip
+	unzip ml-100k
 
-benchmark: $(LIBNAME) tests/benchmark.cpp
+benchmark: $(LIBNAME) ./ml-100k tests/benchmark.cpp
 	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o benchmark
 
 clean :
 	rm -rf ./obj 
 
 fclean : clean
-	rm -f $(NAME) $(LIBNAME) benchmark
+	rm -f $(LIBNAME)
 
 re : fclean all
 
