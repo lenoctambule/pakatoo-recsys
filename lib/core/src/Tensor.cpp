@@ -1,6 +1,4 @@
-#include "Tensor.hpp"
-#include <vector>
-#include <iostream>
+#include "core/Tensor.hpp"
 
 Tensor::Tensor(size_t depth, bool is_symmetric) :
                                 _tensor(),

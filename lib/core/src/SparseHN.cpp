@@ -1,4 +1,4 @@
-#include "SparseHN.hpp"
+#include "core/SparseHN.hpp"
 
 SparseHN::SparseHN() : _sc(0), tensor(1, true)
 {

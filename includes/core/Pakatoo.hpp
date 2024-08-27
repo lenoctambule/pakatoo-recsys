@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SparseHN.hpp"
+#include "core/SparseHN.hpp"
 
 typedef struct s_utrack
 {

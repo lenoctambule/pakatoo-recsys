@@ -6,6 +6,7 @@
 # include <cstddef>
 # include <fstream>
 # include <sstream>
+# include <iostream>
 # include <sys/stat.h>
 
 # define FSIG "PK2\00"

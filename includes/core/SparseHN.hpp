@@ -1,6 +1,6 @@
 #pragma once
 
-# include "Tensor.hpp"
+# include "core/Tensor.hpp"
 # include "utils.hpp"
 # include <deque>
 # include <vector>
