@@ -1,8 +1,8 @@
 #include "interface/Dispatcher.hpp"
 
 Dispatcher::Dispatcher(ushort n_threads) :
-    _inference_workers(n_threads, Worker(_recsys)),
-    _training_worker(_recsys)
+    _inference_workers(n_threads, Worker(&_recsys)),
+    _training_worker(&_recsys)
 {
 }
 
@@ -11,11 +11,15 @@ Dispatcher::~Dispatcher()
     join();
 }
 
+static void start_worker(Worker *worker) {
+    worker->init();
+}
+
 void    Dispatcher::init()
 {
-    _threads.push_back(std::thread(_training_worker));
+    _threads.push_back(std::thread(start_worker, &_training_worker));
     for (size_t i = 0; i < _inference_workers.size(); i++)
-        _threads.push_back(std::thread(_inference_workers[i]));
+        _threads.push_back(std::thread(start_worker, &_inference_workers[i]));
 }
 
 void    Dispatcher::join()
