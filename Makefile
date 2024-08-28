@@ -15,7 +15,7 @@ SRCS	+= $(addprefix $(SRC_DIR)/interface/, \
 			)
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
-LIBNAME = pakatoo-core.a
+LIBNAME = pakatoo-cpp.a
 DEPS	= $(OBJ:%.o=%.d)
 
 all: $(LIBNAME) benchmark dispatcher
@@ -34,10 +34,10 @@ ml-100k:
 	rm -rf ml-100k.zip
 
 benchmark: $(LIBNAME) ./ml-100k tests/benchmark.cpp
-	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o benchmark
+	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o tests/benchmark
 
 dispatcher: $(LIBNAME) ./ml-100k tests/dispatcher.cpp
-	$(CC) $(FLAGS) $(INCS) tests/dispatcher.cpp $(LIBNAME) -o dispatcher
+	$(CC) $(FLAGS) $(INCS) tests/dispatcher.cpp $(LIBNAME) -o tests/dispatcher
 
 clean :
 	rm -rf ./obj 

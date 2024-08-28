@@ -6,8 +6,7 @@ Dispatcher::Dispatcher(ushort n_threads) :
 {
 }
 
-Dispatcher::~Dispatcher()
-{
+Dispatcher::~Dispatcher() {
     join();
 }
 
@@ -17,24 +16,29 @@ static void start_worker(Worker *worker) {
 
 void    Dispatcher::init()
 {
-    _threads.push_back(std::thread(start_worker, &_training_worker));
+    _pool.push_back(std::thread(start_worker, &_training_worker));
     for (size_t i = 0; i < _inference_workers.size(); i++)
-        _threads.push_back(std::thread(start_worker, &_inference_workers[i]));
+        _pool.push_back(std::thread(start_worker, &_inference_workers[i]));
 }
 
 void    Dispatcher::join()
 {
-    for (size_t i = 0; i < _threads.size(); i++)
-        _threads[i].join();
+    for (size_t i = 0; i < _pool.size(); i++)
+        _pool[i].join();
 }
 
 void    Dispatcher::dispatch_training(size_t uid, t_iclamped &clamped) {
     _training_worker.addTrainingJob(uid, clamped);
 }
 
-size_t  Dispatcher::dispatch_eval(size_t uid, size_t id)
+void    Dispatcher::dispatch_eval(size_t uid, size_t id, t_result *res)
 {
-    size_t wid = std::rand() % _inference_workers.size();
-    _inference_workers[wid].addInferenceJob(uid, id);
-    return wid;
+    static size_t wid = 0;
+
+    _inference_workers[wid].addInferenceJob(uid, id, res);
+    ++wid %= _inference_workers.size();
+}
+
+bool    Dispatcher::is_training() {
+    return !_training_worker.is_unemployed();
 }

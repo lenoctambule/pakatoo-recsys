@@ -3,6 +3,13 @@
 # include "core/Pakatoo.hpp"
 # include <stack>
 # include <unistd.h>
+# include <future>
+
+typedef struct s_result
+{
+    bool    state;
+    float   res;
+} t_result;
 
 typedef struct s_job
 {
@@ -10,16 +17,17 @@ typedef struct s_job
     t_iclamped  clamped;
     size_t      uid;
     size_t      id;
+    t_result    *res;
 } t_job;
 
 class Worker
 {
     private:
-        Pakatoo             *_recsys;
-        std::mutex          _mutjobs;
-        std::stack<t_job>   _jobs;
-        size_t              _id;
-        static size_t       _cid;
+        Pakatoo                 *_recsys;
+        std::mutex              _mutjobs;
+        std::stack<t_job>       _jobs;
+        size_t                  _id;
+        static size_t           _cid;
 
         Worker();
     public:
@@ -30,5 +38,6 @@ class Worker
 
         void    init();
         void    addTrainingJob(size_t uid, t_iclamped &clamped);
-        void    addInferenceJob(size_t uid, size_t id);
+        void    addInferenceJob(size_t uid, size_t id, t_result *res);
+        bool    is_unemployed();
 };
