@@ -9,7 +9,6 @@
 # include <cstddef>
 # include <cmath>
 # include <limits>
-# include <mutex>
 
 typedef struct s_iclamped
 {
@@ -24,7 +23,6 @@ class SparseHN
 {
     private :
         t_streams   _streams;
-        std::mutex  _wtmut;
         size_t      _sc;
 
         SparseHN(SparseHN const &a);
