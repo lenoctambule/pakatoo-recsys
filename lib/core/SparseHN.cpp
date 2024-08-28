@@ -93,14 +93,15 @@ float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
 {
     float                   pre_E, post_E, E, d_E = 0;
 
-    E = seq_energy(clamped) * clamped.size();
+    E = (seq_energy(clamped) * clamped.size()) / (clamped.size() + 1);
     for (size_t i = 0; i < clamped.size(); i++)
     {
         const std::vector<float> &w = tensor.get(clamped[i].id, id);
         d_E                         += w[0] * clamped[i].val;
     }
-    pre_E = (E + 2 * d_E) / (clamped.size() + 1);
-    post_E = (E - 2 * d_E) / (clamped.size() + 1);
+    d_E = (2 * d_E) / (clamped.size() + 1);
+    pre_E = E + d_E;
+    post_E = E - d_E;
     return exp(post_E) / (exp(post_E) + exp(pre_E));
 }
 
