@@ -1,18 +1,18 @@
 #pragma once
 
-# include "SparseHN.hpp"
+# include "core/SparseHN.hpp"
 
-class Interface
+class Parser
 {
     private :
         SparseHN    _hnet;
 
-        Interface(Interface const &a);
-        Interface       &operator=(Interface const &a);
+        Parser(Parser const &a);
+        Parser       &operator=(Parser const &a);
 
     public :
-        Interface();
-        ~Interface();
+        Parser();
+        ~Parser();
 
         void    handle_request(std::string const &str);
 };

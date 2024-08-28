@@ -28,8 +28,10 @@ static float vlr(float w, float d)
 
 void    SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
 {
+    _wtmut.lock();
     std::vector<float> &w   = tensor.get_or_create(a.id, b.id);
     w[0]                    += vlr(w[0], 5.0f) * a.val * b.val;
+    _wtmut.unlock();
 }
 
 void    SparseHN::batch_train(std::vector<t_iclamped> const &clamped)

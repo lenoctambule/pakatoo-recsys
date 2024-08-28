@@ -8,18 +8,19 @@
 class Dispatcher
 {
     private:
-        std::vector<Worker>         _threads;
-        std::stack<float>           _eval_jobs;
-        std::stack<size_t>          _training_jobs;
         Pakatoo                     _recsys;
+        std::vector<Worker>         _inference_workers;
+        Worker                      _training_worker;
 
+        Dispatcher();
         Dispatcher(Dispatcher const &a);
         Dispatcher  &operator=(Dispatcher const &a);
 
     public:
-        Dispatcher();
+        Dispatcher(ushort a);
         ~Dispatcher();
 
+        void    init();
         size_t  dispatch_eval(size_t uid, size_t id);
         void    dispatch_training(size_t uid, t_iclamped &clamped);
 };
