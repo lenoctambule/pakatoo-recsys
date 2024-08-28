@@ -34,9 +34,6 @@ ml-100k:
 benchmark: $(LIBNAME) ./ml-100k tests/benchmark.cpp
 	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o tests/benchmark
 
-dispatcher: $(LIBNAME) ./ml-100k tests/dispatcher.cpp
-	$(CC) $(FLAGS) $(INCS) tests/dispatcher.cpp $(LIBNAME) -o tests/dispatcher
-
 clean :
 	rm -rf ./obj 
 
