@@ -11,13 +11,14 @@ SRCS	+= $(addprefix $(SRC_DIR)/core/,\
 SRCS	+= $(addprefix $(SRC_DIR)/interface/, \
 						Dispatcher.cpp \
 						Parser.cpp \
+						Worker.cpp \
 			)
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
 LIBNAME = pakatoo-core.a
 DEPS	= $(OBJ:%.o=%.d)
 
-all: $(LIBNAME) benchmark
+all: $(LIBNAME) benchmark dispatcher
 
 -include $(DEPS)
 $(OBJ): $(OBJ_DIR)/%.o : %.cpp
@@ -35,11 +36,14 @@ ml-100k:
 benchmark: $(LIBNAME) ./ml-100k tests/benchmark.cpp
 	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o benchmark
 
+dispatcher: $(LIBNAME) ./ml-100k tests/dispatcher.cpp
+	$(CC) $(FLAGS) $(INCS) tests/dispatcher.cpp $(LIBNAME) -o dispatcher
+
 clean :
 	rm -rf ./obj 
 
 fclean : clean
-	rm -f $(LIBNAME) benchmark
+	rm -f $(LIBNAME) benchmark dispatcher
 
 re : fclean all
 

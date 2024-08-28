@@ -8,13 +8,20 @@ Dispatcher::Dispatcher(ushort n_threads) :
 
 Dispatcher::~Dispatcher()
 {
+    join();
 }
 
 void    Dispatcher::init()
 {
-    _training_worker();
+    _threads.push_back(std::thread(_training_worker));
     for (size_t i = 0; i < _inference_workers.size(); i++)
-        _inference_workers[i]();
+        _threads.push_back(std::thread(_inference_workers[i]));
+}
+
+void    Dispatcher::join()
+{
+    for (size_t i = 0; i < _threads.size(); i++)
+        _threads[i].join();
 }
 
 void    Dispatcher::dispatch_training(size_t uid, t_iclamped &clamped) {

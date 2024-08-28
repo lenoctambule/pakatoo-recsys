@@ -2,10 +2,14 @@
 
 # include "core/Pakatoo.hpp"
 # include <stack>
+# include <unistd.h>
 
 typedef struct s_job
 {
-
+    bool        is_training;
+    t_iclamped  clamped;
+    size_t      uid;
+    size_t      id;
 } t_job;
 
 class Worker
@@ -14,6 +18,7 @@ class Worker
         Pakatoo             &_recsys;
         std::stack<t_job>   _jobs;
 
+        Worker();
     public:
         Worker(Pakatoo &recsys);
         Worker(Worker const &a);
