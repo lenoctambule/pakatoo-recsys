@@ -18,7 +18,6 @@ void    Pakatoo::train_stream(size_t uid, t_iclamped &clamped)
         ut = &_uid_to_sid[uid];
         ut->sid = sid;
         graph.stream_train(sid, clamped);
-        
     }
     else
     {

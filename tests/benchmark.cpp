@@ -8,14 +8,6 @@ typedef struct s_user
     size_t zipcode;
 } t_user;
 
-static void init_features(std::map<std::string, size_t> &features, char const *fname)
-{
-    static size_t gid = 0;
-
-    features[fname] = gid;
-    gid++;
-}
-
 static void train_model(Pakatoo &recsys)
 {
     std::ifstream                       in;
@@ -133,26 +125,9 @@ static void train_model(Pakatoo &recsys)
 
 int main()
 {
-    Pakatoo                             recsys;
-    std::map<std::string, size_t>       features;
-    std::vector<std::vector<t_iclamped>>    user_ratings(943);
-    std::vector<std::vector<t_iclamped>>    user_features(943);
-    std::vector<std::vector<t_iclamped>>    movie_features(1682);
+    Pakatoo                                 recsys;
+    std::map<std::string, size_t>           features;
     std::vector<std::vector<t_iclamped>>    injected_ctx;
-    
-    char const *ft[] = { "rating",
-                        "ukid",
-                        "uteen",
-                        "uyoung",
-                        "umid",
-                        "uold",
-                        "M",
-                        "F",
-                        NULL};
-
-    for (size_t i = 0; ft[i] != NULL; i++)
-        init_features(features, ft[i]);
-    train_model(recsys);
     std::ifstream               in("./ml-100k/u1.test");
     std::string                 line;
     std::vector<std::string>    s;
@@ -162,6 +137,7 @@ int main()
     clock_t                     start;
     size_t                      i = 0;
 
+    train_model(recsys);
     std::cout << std::fixed;
     std::cout << std::setprecision(3);
     start = clock();
