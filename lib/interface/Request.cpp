@@ -31,7 +31,7 @@ Request &Request::operator=(Request const &a)
     return *this;
 }
 
-void    Request::receive_chunk(char *chunk, size_t n)
+void    Request::receive_chunk(char const *chunk, size_t n)
 {
     _raw.append(chunk, n);
     if (!_parsed_header
