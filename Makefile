@@ -6,7 +6,6 @@ SRCS	+= $(addprefix $(SRC_DIR)/core/,\
 						SparseHN.cpp \
 						Tensor.cpp \
 						utils.cpp \
-						Pakatoo.cpp \
 			)
 SRCS	+= $(addprefix $(SRC_DIR)/interface/, \
 						Instance.cpp \

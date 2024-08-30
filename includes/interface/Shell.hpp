@@ -1,6 +1,7 @@
 #pragma once
 
 # include "core/SparseHN.hpp"
+# include "interface/Request.hpp"
 
 class Shell
 {
@@ -14,5 +15,5 @@ class Shell
         Shell();
         ~Shell();
 
-        std::string handle_request(std::string const &str);
+        std::string handle_request(Request &req);
 };
