@@ -9,7 +9,8 @@ SRCS	+= $(addprefix $(SRC_DIR)/core/,\
 						Pakatoo.cpp \
 			)
 SRCS	+= $(addprefix $(SRC_DIR)/interface/, \
-						Parser.cpp \
+						Instance.cpp \
+						Shell.cpp \
 			)
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
