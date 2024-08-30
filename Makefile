@@ -8,6 +8,8 @@ SRCS	+= $(addprefix $(SRC_DIR)/core/,\
 						utils.cpp \
 			)
 SRCS	+= $(addprefix $(SRC_DIR)/interface/, \
+						Request.cpp \
+						SocketIPC.cpp \
 						Instance.cpp \
 						Shell.cpp \
 			)
