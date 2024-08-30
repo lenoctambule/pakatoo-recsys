@@ -48,21 +48,43 @@ void    SocketIPC::accept_client()
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
         close(fd);
-    _reqs.push_back(t_client{.addr=addr, .fd=fd});
-    _cfds.push_back(pollfd{.fd=_socket,
+    _reqs.push_back(t_client{.req=Request(),
+                            .addr=addr,
+                            .fd=fd});
+    _cfds.push_back(pollfd{.fd=fd,
                             .events=POLLIN,
                             .revents=0});
 }
 
+void    SocketIPC::disconnect_client(size_t id)
+{
+    close(_cfds[id].fd);
+    _cfds.erase(_cfds.begin() + id);
+    _reqs.erase(_reqs.begin() + id - 1);
+}
+
 void    SocketIPC::loop()
 {
+    char    chunk[BUFFSIZE];
+    ssize_t rd_len;
+
     while (poll(_cfds.data(), _cfds.size(), 0) >= 0)
     {
         if (_cfds[0].revents & POLLIN)
             accept_client();
         for (size_t i = 1; i < _cfds.size(); i++)
         {
-            /* Recv and send stuff :D */
+            if (_cfds[i].revents & POLLIN)
+            {
+                rd_len = recv(_cfds[i].fd, chunk, BUFFSIZE, 0);
+                if (rd_len <= 0)
+                    disconnect_client(i);
+                _reqs[i-1].req.receive_chunk(chunk, rd_len);
+            }
+            else if (_cfds[i].revents & POLLOUT)
+            {
+                // Send response if ready
+            }
         }
     }
 }

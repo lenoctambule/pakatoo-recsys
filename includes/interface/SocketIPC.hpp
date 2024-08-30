@@ -8,6 +8,8 @@
 # include <poll.h>
 # include "interface/Shell.hpp"
 
+# define BUFFSIZE 65536
+
 typedef struct s_client
 {
     Request     req;
@@ -34,6 +36,7 @@ class SocketIPC
         int         init_sockaddr();
         void        loop();
         void        accept_client();
+        void        disconnect_client(size_t id);
 
     public :
         SocketIPC(std::string ip, ushort port);
