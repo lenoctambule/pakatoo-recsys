@@ -36,3 +36,44 @@ SocketIPC::SocketIPC(std::string ip, ushort port) :
     if (!init_server())
         throw std::runtime_error("Socket initialization failed.");
 }
+
+void    SocketIPC::accept_client()
+{
+    int fd;
+    sockaddr_in addr;
+    socklen_t   addr_len;
+
+    fd = accept(_socket, (sockaddr *)&addr, &addr_len);
+    if (fd < 0)
+        return ;
+    if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
+        close(fd);
+    _reqs.push_back(t_client{.addr=addr, .fd=fd});
+    _cfds.push_back(pollfd{.fd=_socket,
+                            .events=POLLIN,
+                            .revents=0});
+}
+
+void    SocketIPC::loop()
+{
+    while (poll(_cfds.data(), _cfds.size(), 0) >= 0)
+    {
+        if (_cfds[0].revents & POLLIN)
+            accept_client();
+        for (size_t i = 1; i < _cfds.size(); i++)
+        {
+            /* Recv and send stuff :D */
+        }
+    }
+}
+
+void    SocketIPC::start_server()
+{
+    if (listen(_socket, 100) < 0)
+    {
+        close(_socket);
+        throw std::runtime_error("Socket listen failed");
+    }
+    _cfds.push_back(pollfd{.fd=_socket, .events=POLLIN, .revents=0});
+    loop();
+}
