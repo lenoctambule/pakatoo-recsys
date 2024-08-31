@@ -13,6 +13,7 @@
 typedef struct s_client
 {
     Request     req;
+    std::string resp;
     sockaddr_in addr;
     int         fd;
 } t_client;

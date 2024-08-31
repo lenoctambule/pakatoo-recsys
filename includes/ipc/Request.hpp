@@ -19,5 +19,8 @@ class Request
         Request &operator=(Request const &a);
 
         void    receive_chunk(char const *chunk, size_t n);
-        bool    isFinished() const;
+        bool    trunc_sent(ssize_t n);
+
+        std::string const   &get_raw() const;
+        bool                isFinished() const;
 };

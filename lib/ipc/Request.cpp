@@ -1,4 +1,4 @@
-# include "interface/Request.hpp"
+# include "ipc/Request.hpp"
 
 Request::~Request()
 {
@@ -44,6 +44,13 @@ void    Request::receive_chunk(char const *chunk, size_t n)
     }
     if (_parsed_header && _raw.size() >= _len)
         _finished = true;
+}
+
+bool    Request::trunc_sent(ssize_t n) {
+    _raw.erase(0, n);
+    if (_raw.size() == 0)
+        return true;
+    return false;
 }
 
 bool    Request::isFinished() const
