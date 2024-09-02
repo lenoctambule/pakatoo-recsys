@@ -27,7 +27,7 @@ $$
 Now, in order to make inferences, we simply alter the state of the sequence and compute the energy of each of the resulting states to evaluate the probabilities of each state relative to each other. Thus, we have
 
 $$
-P(s_i)= {exp({s_i}) \over \sum_{s_j \in |A|} exp({s_j})}
+P(s_i)= {exp({s_i}) \over \sum_{s_j \in A} exp({s_j})}
 $$
 
 Where $s_i$ is one of the state of the user's rating history to be evaluated.
