@@ -12,7 +12,7 @@ $$
 E(s) = \sum_{ < i,j > } W_{ij} \cdot r_i \cdot r_j
 $$
 
-Where $r_i$ and $r_j$ are ratings between -1 and 1, in the same rating history or sequence. The learning rule is used to capture statistical correlation between nodes of the graph. Given a weight $W_{ij}$ is th learning rule is
+Where $r_i$ and $r_j$ are ratings between -1 and 1, in the same rating history or sequence. The learning rule is used to capture statistical correlation between nodes of the graph. Given a weight $W_{ij}$, the learning rule is
 
 $$
 dW_{ij} = DLR(W_{ij}) \cdot r_i \cdot r_j
