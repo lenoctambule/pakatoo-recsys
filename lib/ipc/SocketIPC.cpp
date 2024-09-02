@@ -44,11 +44,13 @@ void    SocketIPC::accept_client()
     socklen_t   addr_len;
 
     fd = accept(_socket, (sockaddr *)&addr, &addr_len);
+    std::cerr << "Accepted client fd=" << fd << std::endl;
     if (fd < 0)
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
         close(fd);
     _reqs.push_back(t_client{.req=Request(),
+                            .resp="",
                             .addr=addr,
                             .fd=fd});
     _cfds.push_back(pollfd{.fd=fd,
@@ -58,6 +60,7 @@ void    SocketIPC::accept_client()
 
 void    SocketIPC::disconnect_client(size_t id)
 {
+    std::cerr << "Disconnected client fd=" << _cfds[id].fd << std::endl;
     close(_cfds[id].fd);
     _cfds.erase(_cfds.begin() + id);
     _reqs.erase(_reqs.begin() + id - 1);
@@ -84,7 +87,7 @@ void    SocketIPC::loop()
                 if (_reqs[i-1].req.isFinished())
                     _reqs[i-1].resp = _shell.handle_request(_reqs[i-1].req);
             }
-            else if (_cfds[i].revents & POLLOUT)
+            else if (_cfds[i].revents & POLLOUT && _reqs[i-1].resp.size())
             {
                 wr_len = send(_cfds[i].fd, _reqs[i-1].resp.c_str(), BUFFSIZE, 0);
                 if (wr_len <= 0 && _reqs[i-1].req.trunc_sent(wr_len) == true)
