@@ -1,12 +1,12 @@
-#include "core/Pakatoo.hpp"
+#include "interface/Instance.hpp"
 
-Pakatoo::Pakatoo()
+Instance::Instance()
 {}
 
-Pakatoo::~Pakatoo()
+Instance::~Instance()
 {}
 
-void    Pakatoo::train_stream(size_t uid, t_iclamped &clamped)
+void    Instance::train_stream(size_t uid, t_iclamped &clamped)
 {
     size_t      sid;
     t_utrack    *ut;
@@ -27,17 +27,17 @@ void    Pakatoo::train_stream(size_t uid, t_iclamped &clamped)
     ut->ratings.push_back(clamped);
 }
 
-void    Pakatoo::train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
+void    Instance::train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
 {
 	(void) ctx;
     graph.batch_train(seq);
 }
 
-float   Pakatoo::eval(size_t uid, size_t id)
+float   Instance::eval(size_t uid, size_t id)
 {
     return graph.eval(_uid_to_sid[uid].ratings, id);
 }
 
-void    Pakatoo::save(std::string const &path) {
+void    Instance::save(std::string const &path) {
     graph.save(path);
 }

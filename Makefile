@@ -6,17 +6,21 @@ SRCS	+= $(addprefix $(SRC_DIR)/core/,\
 						SparseHN.cpp \
 						Tensor.cpp \
 						utils.cpp \
-						Pakatoo.cpp \
 			)
 SRCS	+= $(addprefix $(SRC_DIR)/interface/, \
-						Parser.cpp \
+						Instance.cpp \
+						Shell.cpp \
+			)
+SRCS	+= $(addprefix $(SRC_DIR)/ipc/, \
+						Request.cpp \
+						SocketIPC.cpp \
 			)
 OBJ		= $(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_DIR	= ./obj
 LIBNAME = pakatoo-cpp.a
 DEPS	= $(OBJ:%.o=%.d)
 
-all: $(LIBNAME) benchmark
+all: $(LIBNAME) server benchmark
 
 -include $(DEPS)
 $(OBJ): $(OBJ_DIR)/%.o : %.cpp
@@ -31,6 +35,9 @@ ml-100k:
 	unzip ml-100k.zip
 	rm -rf ml-100k.zip
 
+server: $(LIBNAME) ./ml-100k lib/server.cpp
+	$(CC) $(FLAGS) $(INCS) lib/server.cpp $(LIBNAME) -o server
+
 benchmark: $(LIBNAME) ./ml-100k tests/benchmark.cpp
 	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o tests/benchmark
 
@@ -38,7 +45,7 @@ clean :
 	rm -rf ./obj 
 
 fclean : clean
-	rm -f $(LIBNAME) benchmark
+	rm -f $(LIBNAME) benchmark server
 
 re : fclean all
 

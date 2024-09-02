@@ -1,4 +1,4 @@
-# include "core/Pakatoo.hpp"
+# include "interface/Instance.hpp"
 # include <iomanip>
 
 typedef struct s_user
@@ -8,7 +8,7 @@ typedef struct s_user
     size_t zipcode;
 } t_user;
 
-static void train_model(Pakatoo &recsys)
+static void train_model(Instance &recsys)
 {
     std::ifstream                       in;
     std::string                         line;
@@ -125,7 +125,7 @@ static void train_model(Pakatoo &recsys)
 
 int main()
 {
-    Pakatoo                                 recsys;
+    Instance                                recsys;
     std::map<std::string, size_t>           features;
     std::vector<std::vector<t_iclamped>>    injected_ctx;
     std::ifstream               in("./ml-100k/u1.test");
