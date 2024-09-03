@@ -9,6 +9,8 @@ ml-*
 *.pk2
 *.zip
 
+*.pyc
+
 peda-session-*
 .gdb_history
 
