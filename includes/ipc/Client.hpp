@@ -1,6 +1,7 @@
 #pragma once
 
 # include "ipc/Request.hpp"
+# include "interface/Shell.hpp"
 # include <sys/socket.h>
 
 # define BUFFSIZE 65536
@@ -15,14 +16,16 @@ typedef enum e_clientstate
 class Client
 {
     private :
+        Shell           &_shell;
         Request         _req;
         t_clientstate   _status;
+        std::string     _resp;
         int             _fd;
         int             _lfd;
 
         Client();
     public :
-        Client(int fd, int lfd);
+        Client(int fd, Shell &shell);
         Client(Client const &a);
         ~Client();
         Client  &operator=(Client const &a);

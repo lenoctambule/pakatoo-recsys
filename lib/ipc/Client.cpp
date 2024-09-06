@@ -1,17 +1,18 @@
 #include "ipc/Client.hpp"
 
-Client::Client(int fd, int lfd) :
-    _fd(fd),
-    _lfd(lfd)
+Client::Client(int fd, Shell &shell) :
+    _shell(shell),
+    _status(Receiving),
+    _fd(fd)
 {
 
 }
 
 Client::Client(Client const &a) :
+    _shell(a._shell),
     _req(a._req),
     _status(a._status),
-    _fd(a._fd),
-    _lfd(a._lfd)
+    _fd(a._fd)
 {
 }
 
@@ -20,7 +21,6 @@ Client  &Client::operator=(Client const &a)
     _req    = a._req;
     _status = a._status;
     _fd     = a._fd;
-    _lfd    = a._lfd;
 
     return *this;
 }
@@ -42,15 +42,18 @@ void    Client::receive()
     }
     _req.receive_chunk(chunk, rd_len);
     if (_req.isFinished())
+    {
+        std::cout << _req << std::endl;
+        _resp   = _shell.handle_request(_req);
         _status = Responding;
+    }
 }
 
 void    Client::respond()
 {
-    const std::string   raw = _req.get_raw();
     ssize_t             len;
 
-    len = send(_fd, raw.c_str(), raw.size(), 0);
+    len = send(_fd, _resp.c_str(), _resp.size(), 0);
     if (len <= 0)
     {
         _status = Done;
@@ -60,7 +63,6 @@ void    Client::respond()
     if (_req.get_raw().size() == 0)
     {
         _status = Done;
-        std::cout << _req << std::endl;
         return ;
     }
 }

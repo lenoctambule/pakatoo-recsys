@@ -10,7 +10,8 @@ class   IPCClient:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s :
             s.connect((self.ip, self.port))
             s.send(msg.get_msg())
-            r = s.recv()
+            r = s.recv(1000)
+        return r
 
     def train_stream(self, iid, uid, clamped):
         self.send_msg(TrainStreamMessage(iid, 0, uid, clamped))

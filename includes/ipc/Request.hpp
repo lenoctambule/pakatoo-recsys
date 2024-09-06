@@ -6,8 +6,8 @@ class Request
 {
     private :
         std::string     _raw;
-        u_char          _cmd_id;
-        size_t          _instance_id;
+        ushort          _cmd_id;
+        ushort          _instance_id;
         size_t          _len;
         bool            _parsed_header;
         bool            _finished;
@@ -22,6 +22,8 @@ class Request
         bool    trunc_sent(ssize_t n);
 
         std::string const   &get_raw() const;
+        ushort              get_cmd_id() const;
+        size_t              get_instance_id() const;
         bool                isFinished() const;
 
         friend std::ostream    &operator<<(std::ostream &s, const Request &r)

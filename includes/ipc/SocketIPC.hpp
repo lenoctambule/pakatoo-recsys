@@ -26,7 +26,7 @@ class SocketIPC
         int                     _socket;
         sockaddr_in             _addr;
         std::vector<pollfd>     _cfds;
-        std::deque<Client>    _reqs;
+        std::deque<Client>      _clients;
 
         SocketIPC();
         SocketIPC(SocketIPC const &a);

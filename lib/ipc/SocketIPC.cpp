@@ -49,9 +49,9 @@ void    SocketIPC::accept_client()
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
         close(fd);
-    _reqs.push_back(Client(fd, _socket));
+    _clients.push_back(Client(fd, _shell));
     _cfds.push_back(pollfd{.fd=fd,
-                            .events=POLLIN,
+                            .events=POLLIN | POLLOUT,
                             .revents=0});
 }
 
@@ -60,7 +60,7 @@ void    SocketIPC::disconnect_client(size_t id)
     std::cerr << "Disconnected client fd=" << _cfds[id].fd << std::endl;
     close(_cfds[id].fd);
     _cfds.erase(_cfds.begin() + id);
-    _reqs.erase(_reqs.begin() + id - 1);
+    _clients.erase(_clients.begin() + id - 1);
 }
 
 void    SocketIPC::loop()
@@ -71,11 +71,11 @@ void    SocketIPC::loop()
             accept_client();
         for (size_t i = 1; i < _cfds.size(); i++)
         {
-            if (_cfds[i].revents & POLLIN && _reqs[i-1].status() == Receiving)
-                _reqs[i-1].receive();
-            else if (_cfds[i].revents & POLLOUT && _reqs[i-1].status() == Responding)
-                _reqs[i-1].respond();
-            if (_reqs[i-1].status() == Done)
+            if (_cfds[i].revents & POLLIN && _clients[i-1].status() == Receiving)
+                _clients[i-1].receive();
+            else if (_cfds[i].revents & POLLOUT && _clients[i-1].status() == Responding)
+                _clients[i-1].respond();
+            if (_clients[i-1].status() == Done)
                 disconnect_client(i);
         }
     }
