@@ -9,9 +9,12 @@ ml-*
 *.pk2
 *.zip
 
+*.pyc
+
 peda-session-*
 .gdb_history
 
+server
 benchmark
 dispatcher
 pakatoo-shell

@@ -7,8 +7,7 @@
 # include <unistd.h>
 # include <poll.h>
 # include "interface/Shell.hpp"
-
-# define BUFFSIZE 65536
+# include "ipc/Client.hpp"
 
 typedef struct s_client
 {
@@ -27,7 +26,7 @@ class SocketIPC
         int                     _socket;
         sockaddr_in             _addr;
         std::vector<pollfd>     _cfds;
-        std::deque<t_client>    _reqs;
+        std::deque<Client>      _clients;
 
         SocketIPC();
         SocketIPC(SocketIPC const &a);

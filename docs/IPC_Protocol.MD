@@ -4,6 +4,8 @@
 
 Header :
 
-- Message length (unsigned long)
-- Command ID (ushort)
 - Instance ID (ushort)
+- Command ID (ushort)
+- Message length (unsigned long)
+
+Body is arbitrary.
