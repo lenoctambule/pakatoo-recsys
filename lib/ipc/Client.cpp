@@ -3,7 +3,8 @@
 Client::Client(int fd, Shell &shell) :
     _shell(shell),
     _status(Receiving),
-    _fd(fd)
+    _fd(fd),
+    _start(clock())
 {
 
 }
@@ -60,12 +61,11 @@ void    Client::respond()
     }
     _resp.erase(0, len);
     if (_resp.size() == 0)
-    {
         _status = Done;
-        return ;
-    }
 }
 
 t_clientstate    Client::status() {
+    if ((((clock() - _start) / CLOCKS_PER_SEC) * 1000) > TIMEOUT)
+        _status = Done;
     return _status;
 }

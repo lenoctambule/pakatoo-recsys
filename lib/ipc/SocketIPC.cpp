@@ -41,10 +41,10 @@ void    SocketIPC::accept_client()
 {
     int fd;
     sockaddr_in addr;
-    socklen_t   addr_len;
+    socklen_t   addr_len = sizeof(addr);
 
     fd = accept(_socket, (sockaddr *)&addr, &addr_len);
-    std::cerr << "Accepted client fd=" << fd << std::endl;
+    std::cerr << _socket << " Accepted client fd=" << fd << std::endl;
     if (fd < 0)
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
@@ -83,7 +83,7 @@ void    SocketIPC::loop()
 
 void    SocketIPC::start_server()
 {
-    if (listen(_socket, 100) < 0)
+    if (listen(_socket, 1024) < 0)
     {
         close(_socket);
         throw std::runtime_error("Socket listen failed");

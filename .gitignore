@@ -14,6 +14,7 @@ ml-*
 peda-session-*
 .gdb_history
 
+server
 benchmark
 dispatcher
 pakatoo-shell
