@@ -44,7 +44,7 @@ void    SocketIPC::accept_client()
     socklen_t   addr_len = sizeof(addr);
 
     fd = accept(_socket, (sockaddr *)&addr, &addr_len);
-    std::cerr << _socket << " Accepted client fd=" << fd << std::endl;
+    std::cerr << "Accepted client fd=" << fd << std::endl;
     if (fd < 0)
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)

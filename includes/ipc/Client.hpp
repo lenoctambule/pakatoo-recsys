@@ -5,7 +5,7 @@
 # include <sys/socket.h>
 
 # define BUFFSIZE 65536
-# define TIMEOUT 1000
+# define TIMEOUT 10
 
 typedef enum e_clientstate
 {
@@ -23,7 +23,7 @@ class Client
         std::string     _resp;
         int             _fd;
         int             _lfd;
-        clock_t         _start;
+        time_t          _start;
 
         Client();
     public :

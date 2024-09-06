@@ -4,7 +4,7 @@ Client::Client(int fd, Shell &shell) :
     _shell(shell),
     _status(Receiving),
     _fd(fd),
-    _start(clock())
+    _start(time(0))
 {
 
 }
@@ -13,7 +13,8 @@ Client::Client(Client const &a) :
     _shell(a._shell),
     _req(a._req),
     _status(a._status),
-    _fd(a._fd)
+    _fd(a._fd),
+    _start(time(0))
 {
 }
 
@@ -22,6 +23,7 @@ Client  &Client::operator=(Client const &a)
     _req    = a._req;
     _status = a._status;
     _fd     = a._fd;
+    _start  = a._start;
 
     return *this;
 }
@@ -65,7 +67,7 @@ void    Client::respond()
 }
 
 t_clientstate    Client::status() {
-    if ((((clock() - _start) / CLOCKS_PER_SEC) * 1000) > TIMEOUT)
-        _status = Done;
+    if (difftime(time(0), _start) > TIMEOUT)
+       _status = Done;
     return _status;
 }
