@@ -23,4 +23,15 @@ class Request
 
         std::string const   &get_raw() const;
         bool                isFinished() const;
+
+        friend std::ostream    &operator<<(std::ostream &s, const Request &r)
+        {
+            s << "cmd_id\t=" << r._cmd_id
+            << "\ninst_id\t=" << r._instance_id
+            << "\nlen\t=" << r._len
+            << std::endl;
+
+            return s;
+        }
 };
+

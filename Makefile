@@ -12,6 +12,7 @@ SRCS	+= $(addprefix $(SRC_DIR)/interface/, \
 						Shell.cpp \
 			)
 SRCS	+= $(addprefix $(SRC_DIR)/ipc/, \
+						Client.cpp \
 						Request.cpp \
 						SocketIPC.cpp \
 			)
@@ -36,16 +37,18 @@ ml-100k:
 	rm -rf ml-100k.zip
 
 server: $(LIBNAME) ./ml-100k lib/server.cpp
-	$(CC) $(FLAGS) $(INCS) lib/server.cpp $(LIBNAME) -o server
+	@mkdir -p ./bin
+	$(CC) $(FLAGS) $(INCS) lib/server.cpp $(LIBNAME) -o ./bin/server
 
 benchmark: $(LIBNAME) ./ml-100k tests/benchmark.cpp
-	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o tests/benchmark
+	@mkdir -p ./bin
+	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o ./bin/benchmark
 
 clean :
 	rm -rf ./obj 
 
 fclean : clean
-	rm -f $(LIBNAME) benchmark server
+	rm -rf $(LIBNAME) ./bin
 
 re : fclean all
 

@@ -49,10 +49,7 @@ void    SocketIPC::accept_client()
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
         close(fd);
-    _reqs.push_back(t_client{.req=Request(),
-                            .resp="",
-                            .addr=addr,
-                            .fd=fd});
+    _reqs.push_back(Client(fd, _socket));
     _cfds.push_back(pollfd{.fd=fd,
                             .events=POLLIN,
                             .revents=0});
@@ -68,31 +65,18 @@ void    SocketIPC::disconnect_client(size_t id)
 
 void    SocketIPC::loop()
 {
-    char    chunk[BUFFSIZE];
-    ssize_t rd_len;
-    ssize_t wr_len;
-
     while (poll(_cfds.data(), _cfds.size(), 0) >= 0)
     {
         if (_cfds[0].revents & POLLIN)
             accept_client();
         for (size_t i = 1; i < _cfds.size(); i++)
         {
-            if (_cfds[i].revents & POLLIN)
-            {
-                rd_len = recv(_cfds[i].fd, chunk, BUFFSIZE, 0);
-                if (rd_len <= 0)
-                    disconnect_client(i);
-                _reqs[i-1].req.receive_chunk(chunk, rd_len);
-                if (_reqs[i-1].req.isFinished())
-                    _reqs[i-1].resp = _shell.handle_request(_reqs[i-1].req);
-            }
-            else if (_cfds[i].revents & POLLOUT && _reqs[i-1].resp.size())
-            {
-                wr_len = send(_cfds[i].fd, _reqs[i-1].resp.c_str(), BUFFSIZE, 0);
-                if (wr_len <= 0 && _reqs[i-1].req.trunc_sent(wr_len) == true)
-                    disconnect_client(i);
-            }
+            if (_cfds[i].revents & POLLIN && _reqs[i-1].status() == Receiving)
+                _reqs[i-1].receive();
+            else if (_cfds[i].revents & POLLOUT && _reqs[i-1].status() == Responding)
+                _reqs[i-1].respond();
+            if (_reqs[i-1].status() == Done)
+                disconnect_client(i);
         }
     }
 }

@@ -57,3 +57,8 @@ bool    Request::isFinished() const
 {
     return _finished;
 }
+
+std::string const   &Request::get_raw() const
+{
+    return _raw;
+}
