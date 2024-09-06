@@ -43,7 +43,6 @@ void    Client::receive()
     _req.receive_chunk(chunk, rd_len);
     if (_req.isFinished())
     {
-        std::cout << _req << std::endl;
         _resp   = _shell.handle_request(_req);
         _status = Responding;
     }
@@ -59,8 +58,8 @@ void    Client::respond()
         _status = Done;
         return ;
     }
-    _req.trunc_sent(len);
-    if (_req.get_raw().size() == 0)
+    _resp.erase(0, len);
+    if (_resp.size() == 0)
     {
         _status = Done;
         return ;
