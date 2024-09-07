@@ -24,8 +24,12 @@ Shell::~Shell()
 std::string Shell::create_instance(Request &req)
 {
     (void) req;
-    _instances.resize(_instances.size() + 1);
-    return message_serialize(0, "Success");
+    std::string ret;
+    size_t      len = _instances.size();
+
+    _instances.resize(len + 1);
+    ret += std::string(reinterpret_cast<const char *>(&len), sizeof(size_t));
+    return message_serialize(0, ret);
 }
 
 std::string Shell::ping(Request &req)
