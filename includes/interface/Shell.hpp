@@ -20,6 +20,8 @@ class Shell
 
         std::string ping(Request &req);
         std::string create_instance(Request &req);
+        std::string train_stream(Request &req);
+        std::string eval(Request &req);
 };
 
 std::string message_serialize(u_char code, std::string const &body);

@@ -21,6 +21,50 @@ Shell::~Shell()
 {
 }
 
+static void deserialize_ts(size_t &uid, t_iclamped &clamped, Request &req)
+{
+    if (req.get_raw().size() != sizeof(uid) + sizeof(clamped) - (sizeof(u_char) + sizeof(size_t)))
+        throw std::runtime_error("Invalid body");
+    char const  *body = req.get_raw().c_str() + sizeof(u_char) + sizeof(size_t);
+    uid     = *reinterpret_cast<const size_t *>(body);
+    clamped = *reinterpret_cast<const t_iclamped *>(body + sizeof(size_t));
+}
+
+std::string Shell::train_stream(Request &req)
+{
+    std::string ret;
+    size_t      uid;
+    t_iclamped  clamped;
+    Instance    &instance = _instances[req.get_instance_id()];
+
+    deserialize_ts(uid, clamped, req);
+    instance.train_stream(uid, clamped);
+    return message_serialize(0, ret);
+}
+
+static void deserialize_eval(size_t &uid, size_t &id, Request &req)
+{
+    if (req.get_raw().size() != sizeof(uid) + sizeof(id) - (sizeof(u_char) + sizeof(size_t)))
+        throw std::runtime_error("Invalid body");
+    char const  *body = req.get_raw().c_str() + sizeof(u_char) + sizeof(size_t);
+    uid     = *reinterpret_cast<const size_t *>(body);
+    id      = *reinterpret_cast<const size_t *>(body + sizeof(size_t));
+}
+
+std::string Shell::eval(Request &req)
+{
+    size_t      uid;
+    size_t      id;
+    float       eval;
+    std::string ret;
+    Instance    &instance = _instances[req.get_instance_id()];
+
+    deserialize_eval(uid, id, req);
+    eval = instance.eval(uid, id);
+    ret += std::string(reinterpret_cast<const char *>(&eval), sizeof(eval));
+    return message_serialize(0, ret);
+}
+
 std::string Shell::create_instance(Request &req)
 {
     (void) req;
@@ -44,6 +88,10 @@ std::string Shell::handle_request(Request &req)
 
     if (req.get_cmd_id() > _resp_functions.size())
         return message_serialize(1, "Unknown command");
-    ret = (this->*(_resp_functions[req.get_cmd_id()]))(req);
+    try {
+        ret = (this->*(_resp_functions[req.get_cmd_id()]))(req);
+    } catch (std::exception &e){
+        return message_serialize(2, e.what());
+    }
     return ret;
 }
