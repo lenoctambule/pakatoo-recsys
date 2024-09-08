@@ -35,7 +35,7 @@ void    Request::receive_chunk(char const *chunk, size_t n)
 {
     _raw.append(chunk, n);
     if (!_parsed_header
-        && _raw.size() > (sizeof(ushort) + 2 * sizeof(size_t)))
+        && _raw.size() >= (2 * sizeof(ushort) + sizeof(size_t)))
     {
         char const *ptr = _raw.c_str();
         _instance_id    = *reinterpret_cast<ushort const *>(ptr);
