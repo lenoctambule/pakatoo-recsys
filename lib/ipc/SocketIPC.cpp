@@ -44,7 +44,7 @@ void    SocketIPC::accept_client()
     socklen_t   addr_len = sizeof(addr);
 
     fd = accept(_socket, (sockaddr *)&addr, &addr_len);
-    std::cerr << "Accepted client fd=" << fd << std::endl;
+    //std::cerr << "Accepted client fd=" << fd << std::endl;
     if (fd < 0)
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
@@ -57,7 +57,7 @@ void    SocketIPC::accept_client()
 
 void    SocketIPC::disconnect_client(size_t id)
 {
-    std::cerr << "Disconnected client fd=" << _cfds[id].fd << std::endl;
+    //std::cerr << "Disconnected client fd=" << _cfds[id].fd << std::endl;
     close(_cfds[id].fd);
     _cfds.erase(_cfds.begin() + id);
     _clients.erase(_clients.begin() + id - 1);

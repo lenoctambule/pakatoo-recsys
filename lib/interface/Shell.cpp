@@ -15,6 +15,8 @@ Shell::Shell()
 {
     _resp_functions.push_back(&Shell::ping);
     _resp_functions.push_back(&Shell::create_instance);
+    _resp_functions.push_back(&Shell::train_stream);
+    _resp_functions.push_back(&Shell::eval);
 }
 
 Shell::~Shell()
@@ -23,11 +25,12 @@ Shell::~Shell()
 
 static void deserialize_ts(size_t &uid, t_iclamped &clamped, Request &req)
 {
-    if (req.get_raw().size() != sizeof(uid) + sizeof(clamped) - (sizeof(u_char) + sizeof(size_t)))
+    if (req.get_raw().size() != sizeof(uid) + sizeof(size_t) + sizeof(float) + 2 * sizeof(ushort) + sizeof(size_t))
         throw std::runtime_error("Invalid body");
-    char const  *body = req.get_raw().c_str() + sizeof(u_char) + sizeof(size_t);
-    uid     = *reinterpret_cast<const size_t *>(body);
-    clamped = *reinterpret_cast<const t_iclamped *>(body + sizeof(size_t));
+    char const  *body = req.get_raw().c_str() + 2 * sizeof(ushort) + sizeof(size_t);
+    uid         = *reinterpret_cast<const size_t *>(body);
+    clamped.id  = *reinterpret_cast<const size_t *>(body += sizeof(size_t));
+    clamped.val = *reinterpret_cast<const float *>(body += sizeof(size_t));
 }
 
 std::string Shell::train_stream(Request &req)
@@ -44,9 +47,9 @@ std::string Shell::train_stream(Request &req)
 
 static void deserialize_eval(size_t &uid, size_t &id, Request &req)
 {
-    if (req.get_raw().size() != sizeof(uid) + sizeof(id) - (sizeof(u_char) + sizeof(size_t)))
+    if (req.get_raw().size() != sizeof(uid) + sizeof(id) + 2 * sizeof(ushort) + sizeof(size_t)) 
         throw std::runtime_error("Invalid body");
-    char const  *body = req.get_raw().c_str() + sizeof(u_char) + sizeof(size_t);
+    char const  *body = req.get_raw().c_str() + 2 * sizeof(ushort) + sizeof(size_t);
     uid     = *reinterpret_cast<const size_t *>(body);
     id      = *reinterpret_cast<const size_t *>(body + sizeof(size_t));
 }
@@ -73,6 +76,7 @@ std::string Shell::create_instance(Request &req)
 
     _instances.resize(len + 1);
     ret += std::string(reinterpret_cast<const char *>(&len), sizeof(size_t));
+    std::cerr << "Created instance " << len << std::endl;
     return message_serialize(0, ret);
 }
 
