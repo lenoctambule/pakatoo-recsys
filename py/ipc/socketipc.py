@@ -2,7 +2,7 @@ import socket
 import ctypes
 from messages import *
 
-BUFFER_SIZE=3
+BUFFER_SIZE=65536
 
 class Response:
     code            = 0
@@ -39,7 +39,7 @@ class   IPCClient:
             s.send(msg.get_msg())
             r = self.recv_msg(s)
         return r
-    
+
     def create_instance(self) -> ctypes.c_ulong:
         r    = self.send_msg(CreateInstanceMessage()).get_body()
         iid = ctypes.c_ulong()

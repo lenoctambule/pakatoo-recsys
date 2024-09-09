@@ -43,15 +43,27 @@ void    SparseHN::batch_train(std::vector<t_iclamped> const &clamped)
 
 size_t  SparseHN::stream_create()
 {
-    _streams.resize(_streams.size() + 1);
+    _streams[_sc] = t_stream();
     return _sc++;
+}
+
+template <typename T>
+size_t  SparseHN::stream_init(T const &history)
+{
+    _streams[_sc] = t_stream(history.begin(), history.end());
+    return _sc++;
+}
+
+void    SparseHN::stream_delete(size_t sid) {
+    _streams.erase(sid);
 }
 
 void    SparseHN::stream_train(size_t sid, t_iclamped &n)
 {
-    if (sid >= _streams.size())
+    auto    ite = _streams.find(sid);
+    if (ite == _streams.end())
         throw std::out_of_range("Invalid stream id.");
-    t_stream &s = _streams[sid];
+    t_stream &s = ite->second;
     for (auto ite = s.begin(); ite != s.end(); ite++)
         update_interaction(n, *ite);
     s.push_back(n);
