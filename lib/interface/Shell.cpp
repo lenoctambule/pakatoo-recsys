@@ -17,6 +17,7 @@ Shell::Shell()
     _resp_functions.push_back(&Shell::create_instance);
     _resp_functions.push_back(&Shell::stream_train);
     _resp_functions.push_back(&Shell::stream_delete);
+    _resp_functions.push_back(&Shell::stream_init);
     _resp_functions.push_back(&Shell::eval);
 }
 
