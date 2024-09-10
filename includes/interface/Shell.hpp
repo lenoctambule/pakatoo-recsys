@@ -6,8 +6,8 @@
 class Shell
 {
     private :
-        std::deque<Instance>                    _instances;
-        std::deque<std::string (Shell::*)(Request &)>    _resp_functions;
+        std::deque<Instance>                            _instances;
+        std::deque<std::string (Shell::*)(Request &)>   _resp_functions;
 
         Shell(Shell const &a);
         Shell       &operator=(Shell const &a);

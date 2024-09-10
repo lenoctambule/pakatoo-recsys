@@ -41,7 +41,7 @@ std::string Shell::train_stream(Request &req)
     Instance    &instance = _instances[req.get_instance_id()];
 
     deserialize_ts(uid, clamped, req);
-    instance.train_stream(uid, clamped);
+    instance.stream_train(uid, clamped);
     return message_serialize(0, ret);
 }
 
@@ -63,7 +63,7 @@ std::string Shell::eval(Request &req)
     Instance    &instance = _instances[req.get_instance_id()];
 
     deserialize_eval(uid, id, req);
-    eval = instance.eval(uid, id);
+    eval = instance.stream_eval(uid, id);
     ret += std::string(reinterpret_cast<const char *>(&eval), sizeof(eval));
     return message_serialize(0, ret);
 }

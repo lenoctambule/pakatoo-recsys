@@ -24,6 +24,7 @@ class SparseHN
     private :
         t_streams   _streams;
         size_t      _sc;
+        float       _temp_decay;
 
         SparseHN(SparseHN const &a);
         SparseHN    &operator=(SparseHN const &a);
@@ -57,5 +58,4 @@ class SparseHN
                                 size_t seq_len);
         float   seq_energy(std::vector<t_iclamped> const &clamped);
         float   eval(std::vector<t_iclamped>  const &clamped, size_t id);
-        size_t  infer(std::vector<t_iclamped> &clamped);
 };

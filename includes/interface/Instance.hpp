@@ -11,20 +11,20 @@ typedef struct s_utrack
 class   Instance
 {
     private :
-        std::unordered_map<size_t, t_utrack>    _uid_to_sid;
+        std::unordered_map<size_t, t_utrack>    _users;
 
         Instance(Instance const &a);
         Instance &operator=(Instance const &a);
 
     public :
-        SparseHN                                graph;
+        SparseHN                                cf_graph;
 
         Instance();
         ~Instance();
 
-        void    train_stream(size_t uid, t_iclamped &clamped);
-        void    train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx);
-        float   eval(size_t uid, size_t id);
+        void    stream_train(size_t uid, t_iclamped &clamped);
+        float   stream_eval(size_t uid, size_t id);
+        void    batch_train(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx);
 
         void    save(std::string const &path);
 };

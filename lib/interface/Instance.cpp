@@ -6,38 +6,37 @@ Instance::Instance()
 Instance::~Instance()
 {}
 
-void    Instance::train_stream(size_t uid, t_iclamped &clamped)
+void    Instance::stream_train(size_t uid, t_iclamped &clamped)
 {
     size_t      sid;
     t_utrack    *ut;
 
-    auto ite = _uid_to_sid.find(uid);
-    if (ite == _uid_to_sid.end())
+    auto ite = _users.find(uid);
+    if (ite == _users.end())
     {
-        sid = graph.stream_create();
-        ut = &_uid_to_sid[uid];
+        sid = cf_graph.stream_create();
+        ut = &_users[uid];
         ut->sid = sid;
-        graph.stream_train(sid, clamped);
+        cf_graph.stream_train(sid, clamped);
     }
     else
     {
         ut = &ite->second;
-        graph.stream_train(ut->sid, clamped);
+        cf_graph.stream_train(ut->sid, clamped);
     }
-    ut->ratings.push_back(clamped);
 }
 
-void    Instance::train_batch(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
+void    Instance::batch_train(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx)
 {
 	(void) ctx;
-    graph.batch_train(seq);
+    cf_graph.batch_train(seq);
 }
 
-float   Instance::eval(size_t uid, size_t id)
+float   Instance::stream_eval(size_t uid, size_t id)
 {
-    return graph.eval(_uid_to_sid[uid].ratings, id);
+    return cf_graph.eval(_users[uid].ratings, id);
 }
 
 void    Instance::save(std::string const &path) {
-    graph.save(path);
+    cf_graph.save(path);
 }
