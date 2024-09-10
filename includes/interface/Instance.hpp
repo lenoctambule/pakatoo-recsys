@@ -22,9 +22,11 @@ class   Instance
         Instance();
         ~Instance();
 
-        void    stream_train(size_t uid, t_iclamped &clamped);
+        void    stream_train(size_t uid, t_iclamped const &clamped);
         float   stream_eval(size_t uid, size_t id);
-        void    batch_train(std::vector<t_iclamped> const &seq, std::vector<std::vector<t_iclamped>> const &ctx);
+        void    stream_init(size_t uid, std::deque<t_iclamped> const &clamped);
+        void    stream_delete(size_t uid);
+        void    batch_train(std::vector<t_iclamped> const &seq);
 
         void    save(std::string const &path);
 };

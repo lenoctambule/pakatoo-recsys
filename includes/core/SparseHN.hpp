@@ -47,8 +47,11 @@ class SparseHN
         // Stream user interactions for online training
         size_t  stream_create();
         template <typename T>
-        size_t  stream_init(T const &history);
-        void    stream_train(size_t sid, t_iclamped &n);
+        size_t  stream_init(T const &history) {
+            _streams[_sc] = t_stream(history.begin(), history.end());
+            return _sc++;
+        }
+        void    stream_train(size_t sid, t_iclamped const &n);
         void    stream_delete(size_t sid);
         void    stream_clear();
 

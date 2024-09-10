@@ -53,18 +53,11 @@ size_t  SparseHN::stream_create()
     return _sc++;
 }
 
-template <typename T>
-size_t  SparseHN::stream_init(T const &history)
-{
-    _streams[_sc] = t_stream(history.begin(), history.end());
-    return _sc++;
-}
-
 void    SparseHN::stream_delete(size_t sid) {
     _streams.erase(sid);
 }
 
-void    SparseHN::stream_train(size_t sid, t_iclamped &n)
+void    SparseHN::stream_train(size_t sid, t_iclamped const &n)
 {
     auto    ite = _streams.find(sid);
     if (ite == _streams.end())
