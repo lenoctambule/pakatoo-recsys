@@ -30,8 +30,7 @@ float   Instance::stream_eval(size_t uid, size_t id) {
     return cf_graph.eval(_users[uid].ratings, id);
 }
 
-void    Instance::stream_init(size_t uid, std::deque<t_iclamped> const &clamped)
-{
+void    Instance::stream_init(size_t uid, std::deque<t_iclamped> const &clamped) {
     _users[uid] = t_utrack{.sid=cf_graph.stream_init(clamped),
                             .ratings=std::vector<t_iclamped>(clamped.begin(), clamped.end())};
 }

@@ -20,7 +20,9 @@ class Shell
 
         std::string ping(Request &req);
         std::string create_instance(Request &req);
-        std::string train_stream(Request &req);
+        std::string stream_train(Request &req);
+        std::string stream_delete(Request &req);
+        std::string stream_init(Request &req);
         std::string eval(Request &req);
 };
 
