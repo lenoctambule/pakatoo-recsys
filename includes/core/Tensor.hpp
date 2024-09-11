@@ -11,8 +11,8 @@
 
 # define FSIG "PK2\00"
 
-typedef std::unordered_map<size_t, std::vector<float>>   adj_t;
-typedef std::deque<adj_t>                                tensor_t;
+typedef std::unordered_map<size_t, std::vector<float>>  adj_t;
+typedef std::unordered_map<size_t, adj_t>               tensor_t;
 
 class Tensor
 {
