@@ -34,8 +34,6 @@ std::vector<float>          &Tensor::get_or_create(size_t x, size_t y)
     if (_is_symmetric)
         sort_coordinates(x, y);
     _emax = _emax < x ? x : (_emax < y ? y : _emax);
-    if (x >= _tensor.size())
-        _tensor.resize(x + 1);
     auto    line = _tensor[x].find(y);
     if (line == _tensor[x].end())
         return _ec++, (_tensor[x][y] = std::vector<float>(_depth, 0.0));
@@ -46,12 +44,13 @@ const std::vector<float>    &Tensor::get(size_t x, size_t y) const
 {
     if (_is_symmetric)
         sort_coordinates(x, y);
-    if (x >= _tensor.size())
+    auto    adj = _tensor.find(x);
+    if (_tensor.find(x) == _tensor.end())
         return _default;
-    auto    line = _tensor[x].find(y);
-    if (line == _tensor[x].end())
+    auto    w   = adj->second.find(y);
+    if (w == adj->second.end())
         return _default;
-    return (line->second);
+    return (w->second);
 }
 
 std::vector<float>      &Tensor::operator()(size_t x, size_t y) {
@@ -132,7 +131,6 @@ void                Tensor::load(std::string const &path)
     in.read(buff, sizeof(size_t));
     n_tokens = *reinterpret_cast<size_t *>(buff);
     _tensor.clear();
-    _tensor.resize(n_tokens);
     for (size_t i = 0; i < n_tokens; i++)
         load_adj(in);
 }
