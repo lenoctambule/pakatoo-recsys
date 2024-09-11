@@ -47,7 +47,7 @@ class   IPCClient:
         return iid
 
     def train_stream(self, iid, uid, id, val):
-        self.send_msg(TrainStreamMessage(iid, uid, id, val))
+        self.send_msg(StreamTrainMessage(iid, uid, id, val))
 
     def eval(self, iid, uid, id) -> ctypes.c_float:
         r = self.send_msg(EvalMessage(iid, uid, id)).get_body()
