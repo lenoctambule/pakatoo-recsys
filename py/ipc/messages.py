@@ -4,6 +4,12 @@ import utils
 def serialize_ctype(obj):
     return ctypes.cast(ctypes.byref(obj), ctypes.POINTER(ctypes.c_char * ctypes.sizeof(obj))).contents.raw
 
+def serialize_args(l : list) -> bytes :
+    ret = b""
+    for e in l :
+        ret += serialize_ctype(e)
+    return ret
+
 class   Message:
     def __init__(self,
                  instance_id : ctypes.c_ushort,
@@ -25,24 +31,39 @@ class   Message:
 class   CreateInstanceMessage(Message):
     def __init__(self) -> None:
         msg = bytes()
-        msg += b"created_instance"
+        msg += b"create_instance"
         super().__init__(0, 1, msg)
 
-class   TrainStreamMessage(Message):
+class   StreamTrainMessage(Message):
     def __init__(self, 
                  instance_id : int,
                  uid: ctypes.c_ulong,
                  id : utils.t_clamped,
                  val) -> None:
         msg             = bytes()
-        self.uid        = ctypes.c_ulong(uid)
-        self.id         = ctypes.c_ulong(id)
-        self.val        = ctypes.c_float(val)
-        b_uid           = serialize_ctype(self.uid)
-        b_clamped_id    = serialize_ctype(self.id)
-        b_clamped_val   = serialize_ctype(self.val)
-        msg         += b_uid + b_clamped_id + b_clamped_val
+        msg             += serialize_args([ctypes.c_ulong(uid),
+                                          ctypes.c_ulong(id),
+                                          ctypes.c_float(val),])
         super().__init__(instance_id, 2, msg)
+
+class   StreamDeleteMessage(Message):
+    def __init__(self, 
+                 instance_id : int,
+                 uid: ctypes.c_ulong) -> None:
+        msg             = bytes()
+        msg             += serialize_args([ctypes.c_ulong(uid),])
+        super().__init__(instance_id, 3, msg)
+
+class   StreamInitMessage(Message):
+    def __init__(self, 
+                 instance_id : int,
+                 uid: ctypes.c_ulong,
+                 history: list) -> None:
+        msg             = bytes()
+        msg             += serialize_args([ctypes.c_ulong(uid),])
+        for e in history :
+            msg += serialize_ctype(e)
+        super().__init__(instance_id, 3, msg)
 
 class   EvalMessage(Message):
     def __init__(self, 
@@ -50,7 +71,5 @@ class   EvalMessage(Message):
                  uid: ctypes.c_ulong,
                  id : ctypes.c_ulong) -> None:
         msg         = bytes()
-        self.uid    = ctypes.c_ulong(uid)
-        self.id     = ctypes.c_ulong(id)
-        msg         += serialize_ctype(self.uid) + serialize_ctype(self.id)
+        msg         += serialize_args([ctypes.c_ulong(uid), ctypes.c_ulong(id)])
         super().__init__(instance_id, 5, msg)
