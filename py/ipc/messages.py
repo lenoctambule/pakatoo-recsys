@@ -53,4 +53,4 @@ class   EvalMessage(Message):
         self.uid    = ctypes.c_ulong(uid)
         self.id     = ctypes.c_ulong(id)
         msg         += serialize_ctype(self.uid) + serialize_ctype(self.id)
-        super().__init__(instance_id, 3, msg)
+        super().__init__(instance_id, 5, msg)

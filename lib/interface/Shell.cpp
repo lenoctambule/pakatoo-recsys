@@ -15,7 +15,9 @@ Shell::Shell()
 {
     _resp_functions.push_back(&Shell::ping);
     _resp_functions.push_back(&Shell::create_instance);
-    _resp_functions.push_back(&Shell::train_stream);
+    _resp_functions.push_back(&Shell::stream_train);
+    _resp_functions.push_back(&Shell::stream_delete);
+    _resp_functions.push_back(&Shell::stream_init);
     _resp_functions.push_back(&Shell::eval);
 }
 
@@ -33,7 +35,7 @@ static void deserialize_ts(size_t &uid, t_iclamped &clamped, Request &req)
     clamped.val = *reinterpret_cast<const float *>(body += sizeof(size_t));
 }
 
-std::string Shell::train_stream(Request &req)
+std::string Shell::stream_train(Request &req)
 {
     std::string ret;
     size_t      uid;
@@ -41,9 +43,47 @@ std::string Shell::train_stream(Request &req)
     Instance    &instance = _instances[req.get_instance_id()];
 
     deserialize_ts(uid, clamped, req);
-    instance.train_stream(uid, clamped);
+    instance.stream_train(uid, clamped);
     return message_serialize(0, ret);
 }
+
+std::string Shell::stream_delete(Request &req)
+{
+    size_t  uid;
+
+    if (req.get_raw().size() != sizeof(size_t) + 2 * sizeof(ushort) + sizeof(size_t))
+        throw std::runtime_error("Invalid body");
+    char const  *body = req.get_raw().c_str() + 2 * sizeof(ushort) + sizeof(size_t);
+    uid         = *reinterpret_cast<const size_t *>(body);
+    _instances[req.get_instance_id()].stream_delete(uid);
+    return message_serialize(0, "Ok");
+}
+
+std::string Shell::stream_init(Request &req)
+{
+    std::deque<t_iclamped>  history;
+    t_iclamped              tmp;
+    size_t                  uid;
+    char const              *end;
+    char const              *ite;
+
+    if (req.get_raw().size() < sizeof(size_t) + 2 * sizeof(ushort) + sizeof(size_t))
+        throw std::runtime_error("Invalid body");
+    char const  *body   = req.get_raw().c_str() + 2 * sizeof(ushort) + sizeof(size_t);
+    uid                 = *reinterpret_cast<const size_t *>(body);
+    body                += sizeof(size_t);
+    ite                 = body;
+    end                 = req.get_raw().c_str() + req.get_raw().size();
+    while (ite + sizeof(t_iclamped) < end)
+    {
+        tmp = *reinterpret_cast<t_iclamped const *>(ite);
+        history.push_back(tmp);
+        ite += sizeof(t_iclamped);
+    }
+    _instances[req.get_instance_id()].stream_init(uid, history);
+    return message_serialize(0, "Stream initialized");
+}
+
 
 static void deserialize_eval(size_t &uid, size_t &id, Request &req)
 {
@@ -63,7 +103,7 @@ std::string Shell::eval(Request &req)
     Instance    &instance = _instances[req.get_instance_id()];
 
     deserialize_eval(uid, id, req);
-    eval = instance.eval(uid, id);
+    eval = instance.stream_eval(uid, id);
     ret += std::string(reinterpret_cast<const char *>(&eval), sizeof(eval));
     return message_serialize(0, ret);
 }

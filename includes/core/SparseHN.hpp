@@ -16,14 +16,15 @@ typedef struct s_iclamped
     float       val;
 } t_iclamped;
 
-typedef std::deque<t_iclamped>              t_stream;
-typedef std::deque<std::deque<t_iclamped>>  t_streams;
+typedef std::deque<t_iclamped>                  t_stream;
+typedef std::unordered_map<size_t, t_stream>    t_streams;
 
 class SparseHN
 {
     private :
         t_streams   _streams;
         size_t      _sc;
+        float       _temp_decay;
 
         SparseHN(SparseHN const &a);
         SparseHN    &operator=(SparseHN const &a);
@@ -45,7 +46,13 @@ class SparseHN
 
         // Stream user interactions for online training
         size_t  stream_create();
-        void    stream_train(size_t sid, t_iclamped &n);
+        template <typename T>
+        size_t  stream_init(T const &history) {
+            _streams[_sc] = t_stream(history.begin(), history.end());
+            return _sc++;
+        }
+        void    stream_train(size_t sid, t_iclamped const &n);
+        void    stream_delete(size_t sid);
         void    stream_clear();
 
         // Inference
@@ -54,5 +61,4 @@ class SparseHN
                                 size_t seq_len);
         float   seq_energy(std::vector<t_iclamped> const &clamped);
         float   eval(std::vector<t_iclamped>  const &clamped, size_t id);
-        size_t  infer(std::vector<t_iclamped> &clamped);
 };

@@ -1,10 +1,16 @@
 #include "core/SparseHN.hpp"
 
-SparseHN::SparseHN() : _sc(0), tensor(1, true)
+SparseHN::SparseHN() : 
+    _sc(0),
+    _temp_decay(5.0f),
+    tensor(1, true)
 {
 }
 
-SparseHN::SparseHN(std::string const &path) : _sc(0), tensor(1, true)
+SparseHN::SparseHN(std::string const &path) :
+    _sc(0),
+    _temp_decay(5.0f),
+    tensor(1, true)
 {
     load(path);
 }
@@ -29,7 +35,7 @@ static float vlr(float w, float d)
 void    SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
 {
     std::vector<float> &w   = tensor.get_or_create(a.id, b.id);
-    w[0]                    += vlr(w[0], 5.0f) * a.val * b.val;
+    w[0]                    += vlr(w[0], _temp_decay) * a.val * b.val;
 }
 
 void    SparseHN::batch_train(std::vector<t_iclamped> const &clamped)
@@ -43,15 +49,20 @@ void    SparseHN::batch_train(std::vector<t_iclamped> const &clamped)
 
 size_t  SparseHN::stream_create()
 {
-    _streams.resize(_streams.size() + 1);
+    _streams[_sc] = t_stream();
     return _sc++;
 }
 
-void    SparseHN::stream_train(size_t sid, t_iclamped &n)
+void    SparseHN::stream_delete(size_t sid) {
+    _streams.erase(sid);
+}
+
+void    SparseHN::stream_train(size_t sid, t_iclamped const &n)
 {
-    if (sid >= _streams.size())
+    auto    ite = _streams.find(sid);
+    if (ite == _streams.end())
         throw std::out_of_range("Invalid stream id.");
-    t_stream &s = _streams[sid];
+    t_stream &s = ite->second;
     for (auto ite = s.begin(); ite != s.end(); ite++)
         update_interaction(n, *ite);
     s.push_back(n);
@@ -101,26 +112,5 @@ float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
     pre_E = E + d_E;
     post_E = E - d_E;
     return exp(post_E) / (exp(post_E) + exp(pre_E));
-}
-
-size_t  SparseHN::infer(std::vector<t_iclamped> &clamped)
-{
-    size_t max_id = 0;
-    float  max_E = std::numeric_limits<float>::min();
-    float  E = 0;
-    std::vector<t_iclamped> seq(clamped);
-
-    seq.push_back(t_iclamped{.id=0, .val=1});
-    for (size_t id = 0; id < tensor.size(); id++)
-    {
-        seq[seq.size()-1].id = id;
-        E = seq_energy(seq);
-        if (E > max_E)
-        {
-            max_E       = E;
-            max_id      = id;
-        }
-    }
-    return max_id;
 }
 

@@ -24,7 +24,7 @@ static void train_model(Instance &recsys)
         r.val   = std::strtof(s[2].c_str(), NULL);
         r.val   = ((r.val - 1) / 4) * 2 - 1;
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
-        recsys.train_stream(uid, r);
+        recsys.stream_train(uid, r);
         std::cout << "[" <<  loading_loop() << "] Training model ... " << std::endl;
         std::cout << LINE_ERASE;
     }
@@ -148,16 +148,16 @@ int main()
         r.id    = std::strtoul(s[1].c_str(), NULL, 10) - 1;
         r.val   = std::strtof(s[2].c_str(), NULL);
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
-        float eval = 1 + (1 - recsys.eval(uid, r.id)) * 4;
+        float eval = 1 + (1 - recsys.stream_eval(uid, r.id)) * 4;
         error   += std::pow(eval - r.val, 2);
         std::cout << "[" << loading_loop() << "] Running tests ... " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << " " << eval << std::endl;
         std::cout << LINE_ERASE;
         r.val = ((r.val - 1) / 4) * 2 - 1;
-        recsys.train_stream(uid, r);
+        recsys.stream_train(uid, r);
         i++;
     }
     std::cout << "Avg inference time = " << (((clock() - start) / CLOCKS_PER_SEC) * 1000) / i << "ms" << std::endl;
     std::cout << "RMSE = " << std::sqrt(error / i) << std::endl;
-    std::cout << "Sparsity =" << recsys.graph.tensor.getSparsity() << std::endl;
+    std::cout << "Sparsity =" << recsys.cf_graph.tensor.getSparsity() << std::endl;
     recsys.save("./out.pk2");
 }
