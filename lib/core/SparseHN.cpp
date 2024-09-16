@@ -83,7 +83,7 @@ float   SparseHN::token_energy(std::vector<t_iclamped> const &clamped,
         if (i == j)
             continue;
         const std::vector<float> &w = tensor.get(clamped[i].id, clamped[j].id);
-        E                           += (w[0] * clamped[i].val * clamped[j].val) + w[2] / w[1];
+        E                           += (w[0] * clamped[i].val * clamped[j].val);
     }
     return E;
 }
