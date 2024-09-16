@@ -32,9 +32,7 @@ static void train_model(Instance &recsys)
 
 int main()
 {
-    Instance                                recsys;
-    std::map<std::string, size_t>           features;
-    std::vector<std::vector<t_iclamped>>    injected_ctx;
+    Instance                    recsys;
     std::ifstream               in("./ml-100k/u1.test");
     std::string                 line;
     std::vector<std::string>    s;
@@ -50,12 +48,11 @@ int main()
     start = clock();
     while (std::getline(in, line))
     {
-        std::vector<t_iclamped> features;
         split(line, s, "\t");
         r.id    = std::strtoul(s[1].c_str(), NULL, 10) - 1;
         r.val   = std::strtof(s[2].c_str(), NULL);
         uid     = std::strtoul(s[0].c_str(), NULL, 10);
-        float eval = 1 + (1 - recsys.stream_eval(uid, r.id)) * 4;
+        float eval = 1 + recsys.stream_eval(uid, r.id) * 4;
         error   += std::pow(eval - r.val, 2);
         std::cout << "[" << loading_loop() << "] Running tests ... " << (i / 200.0f) << "%\t" << "RMSE = " << std::sqrt(error / i) << " " << eval << std::endl;
         std::cout << LINE_ERASE;

@@ -108,5 +108,5 @@ float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
         d_E                         += w[0] * clamped[i].val;
     }
     d_E = (2 * d_E) / (clamped.size() + 1);
-    return exp(-d_E) / (exp(d_E) + exp(-d_E));
+    return exp(d_E) / (exp(d_E) + exp(-d_E));
 }

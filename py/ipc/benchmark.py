@@ -25,7 +25,7 @@ if __name__ == "__main__" :
             uid = int(s[0])
             id  = int(s[1])
             ret = cli.eval(iid, uid, id).value
-            ret = 1 + (1 - ret) * 4
+            ret = 1 + (ret) * 4
             real = float(s[2])
             error += (ret - real) ** 2
             i += 1
