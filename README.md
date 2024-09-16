@@ -40,3 +40,6 @@ In order to save space complexity, I've chosen to store the matrix as sparse at 
 
 MovieLens 100k
 RMSE : 0.990
+
+MovieLens 1M
+RMSE : 0.941
