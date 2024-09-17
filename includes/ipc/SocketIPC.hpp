@@ -1,6 +1,7 @@
 #pragma once
 
 # include <sys/socket.h>
+# include <sys/un.h>
 # include <netinet/in.h>
 # include <arpa/inet.h>
 # include <sys/fcntl.h>
@@ -21,10 +22,10 @@ class SocketIPC
 {
     private :
         Shell                   _shell;
-        std::string             _ip;
+        std::string             _str_addr;
         ushort                  _port;
         int                     _socket;
-        sockaddr_in             _addr;
+        struct sockaddr_un      _addr;
         std::vector<pollfd>     _cfds;
         std::deque<Client>      _clients;
 
@@ -39,7 +40,7 @@ class SocketIPC
         void        disconnect_client(size_t id);
 
     public :
-        SocketIPC(std::string ip, ushort port);
+        SocketIPC(std::string addr);
         ~SocketIPC();
 
         void        start_server();

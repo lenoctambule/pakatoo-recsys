@@ -8,7 +8,7 @@ int SocketIPC::init_server()
 {
     int optval = 1;
 
-    _socket = socket(AF_INET, SOCK_STREAM, 0);
+    _socket = socket(AF_UNIX, SOCK_STREAM, 0);
     if (_socket < 0)
         return 0;
     if (setsockopt(_socket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(int)) < 0)
@@ -22,14 +22,13 @@ int SocketIPC::init_server()
 
 int SocketIPC::init_sockaddr()
 {
-    _addr.sin_family        = AF_INET;
-    _addr.sin_port          = htons(_port);
-    return inet_pton(AF_INET, _ip.c_str(), &(_addr.sin_addr));
+    _addr.sun_family        = AF_UNIX;
+    strcpy(_addr.sun_path, _str_addr.c_str());
+    return 1;
 }
 
-SocketIPC::SocketIPC(std::string ip, ushort port) :
-    _ip(ip),
-    _port(port)
+SocketIPC::SocketIPC(std::string addr) :
+    _str_addr(addr)
 {
     if (!init_sockaddr())
         throw std::runtime_error("Invalid IP.");
@@ -44,7 +43,6 @@ void    SocketIPC::accept_client()
     socklen_t   addr_len = sizeof(addr);
 
     fd = accept(_socket, (sockaddr *)&addr, &addr_len);
-    //std::cerr << "Accepted client fd=" << fd << std::endl;
     if (fd < 0)
         return ;
     if (fcntl(fd, F_SETFD, FD_CLOEXEC) < 0)
@@ -57,7 +55,6 @@ void    SocketIPC::accept_client()
 
 void    SocketIPC::disconnect_client(size_t id)
 {
-    //std::cerr << "Disconnected client fd=" << _cfds[id].fd << std::endl;
     close(_cfds[id].fd);
     _cfds.erase(_cfds.begin() + id);
     _clients.erase(_clients.begin() + id - 1);

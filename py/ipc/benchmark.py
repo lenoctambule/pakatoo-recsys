@@ -4,7 +4,7 @@ import time
 
 LINE_ERASE = "\x1b[1A\x1b[2K"
 if __name__ == "__main__" :
-    cli = IPCClient()
+    cli = IPCClient(addr="socket_ipc")
     iid = int(cli.create_instance().value)
     print(f"Instance ID {iid}")
     error = 0.0

@@ -15,9 +15,8 @@ class Response:
         return self.raw[9:]
 
 class   IPCClient:
-    def __init__(self, ip : str = "127.0.0.1", port : int = 4560) -> None:
-        self.ip = ip
-        self.port = port
+    def __init__(self, addr : str = "recsys_ipc") -> None:
+        self.addr   = addr
 
     def recv_msg(self, s : socket.socket):
         r = Response()
@@ -34,8 +33,8 @@ class   IPCClient:
         return r
 
     def send_msg(self, msg : Message) -> Response :
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s :
-            s.connect((self.ip, self.port))
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s :
+            s.connect((self.addr))
             s.send(msg.get_msg())
             r = self.recv_msg(s)
         return r
