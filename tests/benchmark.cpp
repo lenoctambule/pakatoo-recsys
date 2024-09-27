@@ -38,7 +38,7 @@ int main()
     std::vector<std::string>    s;
     size_t                      uid;
     t_iclamped                  r;
-    double                      error;
+    double                      error = 0;
     clock_t                     start;
     size_t                      i = 0;
 
