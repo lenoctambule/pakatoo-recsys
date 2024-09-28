@@ -19,6 +19,7 @@ Shell::Shell()
     _resp_functions.push_back(&Shell::stream_delete);
     _resp_functions.push_back(&Shell::stream_init);
     _resp_functions.push_back(&Shell::eval);
+    _resp_functions.push_back(&Shell::save);
 }
 
 Shell::~Shell()
@@ -118,6 +119,16 @@ std::string Shell::create_instance(Request &req)
     ret += std::string(reinterpret_cast<const char *>(&len), sizeof(size_t));
     std::cerr << "Created instance " << len << std::endl;
     return message_serialize(0, ret);
+}
+
+std::string Shell::save(Request &req)
+{
+    Instance    &instance = _instances[req.get_instance_id()];
+    std::stringstream ss;
+
+    ss << "./instances/" << req.get_instance_id() << ".pk2";
+    instance.save(ss.str().c_str());
+    return message_serialize(0, "Message saved");
 }
 
 std::string Shell::ping(Request &req)

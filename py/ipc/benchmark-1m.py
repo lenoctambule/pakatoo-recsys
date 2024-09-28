@@ -5,7 +5,7 @@ import random
 
 LINE_ERASE = "\x1b[1A\x1b[2K"
 if __name__ == "__main__" :
-    cli = IPCClient()
+    cli = IPCClient(addr='socket_ipc')
     iid = int(cli.create_instance().value)
     print(f"Instance ID {iid}")
     error = 0.0
@@ -39,3 +39,4 @@ if __name__ == "__main__" :
         print(f"{(i / len(test_stream))*100:.2f}%\t{ret:.2f} - {real:.2f}\t{math.sqrt(error/i):.4f}\n", end='')
     print(f"RMSE = {math.sqrt(error/i)}")
     total = (time.time() - start)/i * 1000
+    cli.save(iid=iid)

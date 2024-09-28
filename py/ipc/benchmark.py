@@ -33,3 +33,4 @@ if __name__ == "__main__" :
             print(f"{i / 200:.2f}%\t{ret:.2f} - {real:.2f}\t{math.sqrt(error/i):.4f}\n", end=LINE_ERASE)
     print(f"RMSE = {math.sqrt(error/i)}")
     total = (time.time() - start)/i * 1000
+    cli.save(iid=iid)

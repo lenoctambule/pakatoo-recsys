@@ -2,14 +2,14 @@
 
 SparseHN::SparseHN() : 
     _sc(0),
-    _temp_decay(5.0f),
+    _temp_decay(2 * M_PI),
     tensor(1, true)
 {
 }
 
 SparseHN::SparseHN(std::string const &path) :
     _sc(0),
-    _temp_decay(5.0f),
+    _temp_decay(2 * M_PI),
     tensor(1, true)
 {
     load(path);

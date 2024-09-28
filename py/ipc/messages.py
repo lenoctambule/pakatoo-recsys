@@ -73,3 +73,9 @@ class   EvalMessage(Message):
         msg         = bytes()
         msg         += serialize_args([ctypes.c_ulong(uid), ctypes.c_ulong(id)])
         super().__init__(instance_id, 5, msg)
+
+class   SaveInstanceMessage(Message):
+    def __init__(self) -> None:
+        msg = bytes()
+        msg += b"save_instance"
+        super().__init__(0, 6, msg)

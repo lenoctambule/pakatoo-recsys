@@ -24,6 +24,7 @@ class Shell
         std::string stream_delete(Request &req);
         std::string stream_init(Request &req);
         std::string eval(Request &req);
+        std::string save(Request &req);
 };
 
 std::string message_serialize(u_char code, std::string const &body);

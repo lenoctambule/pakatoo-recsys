@@ -53,3 +53,7 @@ class   IPCClient:
         eval = ctypes.c_float()
         ctypes.memmove(ctypes.pointer(eval), r, ctypes.sizeof(eval))
         return eval
+    
+    def save(self, iid):
+        r    = self.send_msg(SaveInstanceMessage()).get_body()
+        return iid
