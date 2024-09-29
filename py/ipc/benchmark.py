@@ -54,7 +54,7 @@ if __name__ == "__main__" :
             ret = 1 + (ret) * 4
             error += (ret - real) ** 2
             i += 1
-            print(f"{i / 200:.2f}%\t{ret:.2f} - {real:.2f}\t{math.sqrt(error/i):.4f}\n", end=LINE_ERASE)
+            print(f"{i / len(lines) * 100:.2f}%\t{ret:.2f} - {real:.2f}\t{math.sqrt(error/i):.4f}\n", end=LINE_ERASE)
     print(f"Training data RMSE = {math.sqrt(error / i)}")
     cli.save(iid=iid)
     server.kill()

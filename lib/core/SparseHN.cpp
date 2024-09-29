@@ -2,14 +2,14 @@
 
 SparseHN::SparseHN() : 
     _sc(0),
-    _temp_decay(2 * M_PI),
+    _temp_decay(5),
     tensor(1, true)
 {
 }
 
 SparseHN::SparseHN(std::string const &path) :
     _sc(0),
-    _temp_decay(2 * M_PI),
+    _temp_decay(5),
     tensor(1, true)
 {
     load(path);
@@ -29,7 +29,7 @@ void    SparseHN::load(std::string const &path) {
 
 static float vlr(float w, float d)
 {
-    return std::exp(-(w*w) * d);
+    return std::exp(-std::abs(w) * d);
 }
 
 void    SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
