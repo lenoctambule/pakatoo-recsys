@@ -2,9 +2,14 @@ from socketipc import *
 import math
 import time
 import random
+import subprocess
+import os
+from display_mat import display_mat
 
 LINE_ERASE = "\x1b[1A\x1b[2K"
 if __name__ == "__main__" :
+    server = subprocess.Popen(['./bin/server', 'socket_ipc'])
+    time.sleep(0.5)
     cli = IPCClient(addr='socket_ipc')
     iid = int(cli.create_instance().value)
     print(f"Instance ID {iid}")
@@ -40,3 +45,6 @@ if __name__ == "__main__" :
     print(f"RMSE = {math.sqrt(error/i)}")
     total = (time.time() - start)/i * 1000
     cli.save(iid=iid)
+    server.kill()
+    display_mat('./instances/0.pk2', 4000)
+    os.remove('socket_ipc')

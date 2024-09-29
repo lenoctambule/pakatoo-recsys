@@ -29,7 +29,7 @@ void    SparseHN::load(std::string const &path) {
 
 static float vlr(float w, float d)
 {
-    return std::exp(-std::abs(w) * d);
+    return std::exp(-(w*w) * d);
 }
 
 void    SparseHN::update_interaction(t_iclamped const &a, t_iclamped const &b)
