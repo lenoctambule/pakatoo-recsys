@@ -10,7 +10,7 @@
 # include <cmath>
 # include <limits>
 
-# define TEMP_DECAY 5.4
+# define TEMP_DECAY 5.5
 
 typedef struct s_iclamped
 {
