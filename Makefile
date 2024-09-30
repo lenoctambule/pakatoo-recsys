@@ -36,11 +36,16 @@ ml-100k:
 	unzip ml-100k.zip
 	rm -rf ml-100k.zip
 
-server: $(LIBNAME) ./ml-100k lib/server.cpp
+ml-1m:
+	wget https://files.grouplens.org/datasets/movielens/ml-1m.zip
+	unzip ml-1m.zip
+	rm -rf ml-1m.zip
+
+server: $(LIBNAME) ./ml-100k ./ml-1m lib/server.cpp
 	@mkdir -p ./bin
 	$(CC) $(FLAGS) $(INCS) lib/server.cpp $(LIBNAME) -o ./bin/server
 
-benchmark: $(LIBNAME) ./ml-100k tests/benchmark.cpp
+benchmark: $(LIBNAME) ./ml-100k ./ml-1m tests/benchmark.cpp
 	@mkdir -p ./bin
 	$(CC) $(FLAGS) $(INCS) tests/benchmark.cpp $(LIBNAME) -o ./bin/benchmark
 

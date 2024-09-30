@@ -10,6 +10,8 @@
 # include <cmath>
 # include <limits>
 
+# define TEMP_DECAY 5.4
+
 typedef struct s_iclamped
 {
     size_t      id;
