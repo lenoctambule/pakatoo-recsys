@@ -101,6 +101,7 @@ float   SparseHN::seq_energy(std::vector<t_iclamped> const &clamped)
 float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
 {
     float                   d_E = 0;
+    float                   tmp = 0;
 
     for (size_t i = 0; i < clamped.size(); i++)
     {
@@ -108,5 +109,6 @@ float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
         d_E                         += w[0] * clamped[i].val;
     }
     d_E = (2 * d_E) / (clamped.size() + 1);
-    return exp(d_E) / (exp(d_E) + exp(-d_E));
+    tmp = std::exp(2 * d_E);
+    return tmp / (tmp + 1);
 }
