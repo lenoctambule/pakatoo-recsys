@@ -98,6 +98,13 @@ float   SparseHN::seq_energy(std::vector<t_iclamped> const &clamped)
     return E / seq_len;
 }
 
+/*
+Modern hopfield network with the quadratic energy function F(x) = x^2
+
+This function computes the relative probability between the system
+with the id token added and without
+P = norm(E_x) = norm(4 * \sum_{x \in P} W_ij * x_i)
+*/
 float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
 {
     float                   d_E = 0;
@@ -108,7 +115,7 @@ float   SparseHN::eval(std::vector<t_iclamped> const &clamped, size_t id)
         const std::vector<float> &w = tensor.get(clamped[i].id, id);
         d_E                         += w[0] * clamped[i].val;
     }
-    d_E = (2 * d_E) / (clamped.size() + 1);
-    tmp = std::exp(2 * d_E);
+    d_E = (d_E) / (clamped.size() + 1);
+    tmp = std::exp(4 * d_E);
     return tmp / (tmp + 1);
 }
