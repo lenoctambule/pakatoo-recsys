@@ -79,3 +79,9 @@ class   SaveInstanceMessage(Message):
         msg = bytes()
         msg += b"save_instance"
         super().__init__(0, 6, msg)
+
+class   PingMessage(Message):
+    def __init__(self) -> None:
+        msg = bytes()
+        msg += b"Ping"
+        super().__init__(0, 0, msg)

@@ -29,3 +29,7 @@ The energy function has been generalized from simple interaction used in the Isi
 $$
 E(x) = -\sum_{p \in P} F(p \cdot x)
 $$
+
+$$
+
+$$

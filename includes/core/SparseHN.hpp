@@ -21,6 +21,9 @@ typedef struct s_iclamped
 typedef std::deque<t_iclamped>                  t_stream;
 typedef std::unordered_map<size_t, t_stream>    t_streams;
 
+/*
+Modern hopfield network with the quadratic energy function F(x) = x^2
+*/
 class SparseHN
 {
     private :

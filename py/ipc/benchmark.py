@@ -9,8 +9,8 @@ first_ratings = [0] * 1683
 LINE_ERASE = "\x1b[1A\x1b[2K"
 if __name__ == "__main__" :
     server = subprocess.Popen(['./bin/server', 'socket_ipc'])
-    time.sleep(0.5)
     cli = IPCClient(addr="socket_ipc")
+    cli.waitUp()
     iid = int(cli.create_instance().value)
     print(f"Instance ID {iid}")
     error = 0.0

@@ -1,5 +1,6 @@
 import socket
 import ctypes
+import time
 from messages import *
 
 BUFFER_SIZE=65536
@@ -57,3 +58,13 @@ class   IPCClient:
     def save(self, iid):
         r    = self.send_msg(SaveInstanceMessage()).get_body()
         return iid
+    
+    def waitUp(self):
+        while True :
+            try :
+                resp = self.send_msg(PingMessage())
+                break
+            except :
+                print("Waiting for server to be up ...")
+                time.sleep(0.5)
+                continue
