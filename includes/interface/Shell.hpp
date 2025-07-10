@@ -2,6 +2,7 @@
 
 # include "ipc/Request.hpp"
 # include "interface/Instance.hpp"
+# include <filesystem>
 
 class Shell
 {

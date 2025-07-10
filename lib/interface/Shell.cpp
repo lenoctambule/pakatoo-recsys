@@ -1,5 +1,7 @@
 #include "interface/Shell.hpp"
 
+namespace fs = std::filesystem;
+
 std::string message_serialize(u_char code, std::string const &body)
 {
     std::string ret;
@@ -126,9 +128,11 @@ std::string Shell::save(Request &req)
     Instance    &instance = _instances[req.get_instance_id()];
     std::stringstream ss;
 
+    if (!fs::exists("./instances/"))
+        fs::create_directory("./instances/");
     ss << "./instances/" << req.get_instance_id() << ".pk2";
     instance.save(ss.str().c_str());
-    return message_serialize(0, "Message saved");
+    return message_serialize(0, "Saved");
 }
 
 std::string Shell::ping(Request &req)

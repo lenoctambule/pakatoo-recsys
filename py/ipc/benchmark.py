@@ -40,22 +40,6 @@ if __name__ == "__main__" :
     print(f"RMSE = {math.sqrt(error / i)}")
     total = (time.time() - start) / i * 1000
     print(f"AVG Inference time = {total} ms")
-    error = 0
-    i = 0
-    # with open("./ml-100k/u1.base", "r") as f :
-    #     lines = f.readlines()
-    #     for l in lines :
-    #         s = l.split("\t")
-    #         uid = int(s[0])
-    #         id  = int(s[1])
-    #         val = ((float(s[2]) - 1) / 4) * 2 - 1
-    #         real = float(s[2])
-    #         ret = cli.eval(iid, uid, id).value
-    #         ret = 1 + (ret) * 4
-    #         error += (ret - real) ** 2
-    #         i += 1
-    #         print(f"{i / len(lines) * 100:.2f}%\t{ret:.2f} - {real:.2f}\t{math.sqrt(error/i):.4f}\n", end=LINE_ERASE)
-    # print(f"Training data RMSE = {math.sqrt(error / i)}")
     cli.save(iid=iid)
     server.kill()
     os.remove('socket_ipc')
