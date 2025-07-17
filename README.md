@@ -1,4 +1,4 @@
-# Pakatoo Recommendation System
+# Real-Time Recommendation System
 
 A Real-time collaborative filtering system based on energy-based learning.
 
